@@ -1,23 +1,37 @@
 import { supabase } from '@/integrations/supabase/client';
 import { retryWithBackoff, withTimeout } from './retry';
 
+// Optional event prefixing helper
+const withEventPrefix = (path: string) => {
+  try {
+    const eventId = localStorage.getItem('currentEventId');
+    if (eventId && !path.startsWith(eventId + '/')) {
+      return `${eventId}/${path}`;
+    }
+  } catch {}
+  return path;
+};
+
 export const SafeStorage = {
   async upload(bucket: string, path: string, body: Blob | File) {
+    const fullPath = withEventPrefix(path);
     return retryWithBackoff(() => withTimeout(
-      supabase.storage.from(bucket).upload(path, body),
+      supabase.storage.from(bucket).upload(fullPath, body),
       20000,
       'Upload timed out'
     ));
   },
   async remove(bucket: string, paths: string[]) {
+    const prefixed = paths.map(p => withEventPrefix(p));
     return retryWithBackoff(() => withTimeout(
-      supabase.storage.from(bucket).remove(paths),
+      supabase.storage.from(bucket).remove(prefixed),
       15000,
       'Remove timed out'
     ));
   },
   getPublicUrl(bucket: string, path: string) {
-    return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+    const fullPath = withEventPrefix(path);
+    return supabase.storage.from(bucket).getPublicUrl(fullPath).data.publicUrl;
   }
 };
 

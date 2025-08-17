@@ -38,7 +38,7 @@ export class SessionManager {
     return newSessionId;
   }
 
-  static async createSession(userName?: string): Promise<void> {
+  static async createSession(userName?: string, eventId?: string): Promise<void> {
     const sessionId = this.getSessionId();
     
     try {
@@ -46,7 +46,8 @@ export class SessionManager {
       await supabase.functions.invoke('initialize-session', {
         body: {
           session_id: sessionId,
-          user_name: userName
+          user_name: userName,
+          event_id: eventId
         }
       });
     } catch (error) {

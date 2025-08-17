@@ -17,7 +17,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { session_id, user_name } = await req.json()
+    const { session_id, user_name, event_id } = await req.json()
 
     if (!session_id) {
       return new Response(
@@ -49,12 +49,23 @@ serve(async (req) => {
       )
     }
 
+    // Resolve event_id (use provided or legacy fallback)
+    let resolved_event_id = event_id
+    if (!resolved_event_id) {
+      const { data: legacy } = await supabaseClient
+        .from('_legacy_event')
+        .select('id')
+        .single()
+      resolved_event_id = legacy?.id || null
+    }
+
     // Create new session
     await supabaseClient
       .from('sessions')
       .insert({
         id: session_id,
         user_name: user_name || null,
+        event_id: resolved_event_id,
         created_at: new Date().toISOString(),
         last_activity: new Date().toISOString()
       })
@@ -92,7 +103,8 @@ serve(async (req) => {
       title: task,
       description: task,
       completed: false,
-      session_id: session_id
+      session_id: session_id,
+      event_id: resolved_event_id
     }))
 
     await supabaseClient
@@ -109,7 +121,8 @@ serve(async (req) => {
     const treasureInserts = treasureLocations.map((location, index) => ({
       location_name: location,
       found: false,
-      session_id: session_id
+      session_id: session_id,
+      event_id: resolved_event_id
     }))
 
     await supabaseClient
@@ -122,21 +135,24 @@ serve(async (req) => {
         title: "Spreek een vreemde aan",
         description: "Ga naar iemand die je niet kent en stel jezelf voor. Vraag naar hun verhaal!",
         type: "social",
-        session_id: session_id
+        session_id: session_id,
+        event_id: resolved_event_id
       },
       {
         title: "Dans Battle!",
         description: "Uitdaging iemand voor een dans battle! Laat je beste moves zien!",
         type: "performance",
         time_limit: 60,
-        session_id: session_id
+        session_id: session_id,
+        event_id: resolved_event_id
       },
       {
         title: "Complimenten Ronde",
         description: "Geef 5 verschillende mensen een oprecht compliment binnen 10 minuten.",
         type: "timed",
         time_limit: 600,
-        session_id: session_id
+        session_id: session_id,
+        event_id: resolved_event_id
       }
     ]
 

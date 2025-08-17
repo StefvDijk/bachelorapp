@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <title>Jelle's Laatste Keer - Bachelor Party Quest</title>
+    <meta name="description" content="Een epische bachelor party quest voor Jelle met bingo, slot machine en Deal Maker's Shop!" />
+    <meta name="author" content="Lovable" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Jelle's laatste keer" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-tileImage" content="/pwa-icons/icon-192x192.png" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/pwa-icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa-icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/pwa-icons/icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/pwa-icons/icon-167x167.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/pwa-icons/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/pwa-icons/icon-16x16.png" />
+
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Jelle's Laatste Keer - Bachelor Party Quest" />
+    <meta property="og:description" content="Een epische bachelor party quest voor Jelle met bingo, slot machine en Deal Maker's Shop!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Leeuwarden-inspired Dutch fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

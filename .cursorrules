@@ -1,0 +1,13 @@
+{
+  "mcp": {
+    "servers": {
+      "postgres": {
+        "command": "mcp-server-postgres",
+        "args": ["postgresql://postgres.jqavewxbfkbtrrvmrzdq:W%21ssel1993%21%21@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"],
+        "env": {
+          "PGPASSWORD": "W!ssel1993!!"
+        }
+      }
+    }
+  }
+} 

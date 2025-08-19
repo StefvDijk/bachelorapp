@@ -26,3 +26,35 @@ npm run preview
 ## Licentie
 
 Proprietary – niet doorverkopen zonder toestemming.
+
+# Bachelor Party Quest — SaaS shell
+
+Deze repo bevat:
+- De marketing/landing (`public/landing.html`, `public/privacy.html`, `public/terms.html`)
+- Business/tech specificatie (`BUSINESS_TECH_SPEC_NL.md`)
+- Go-to-market docs (`docs/`)
+- De originele PWA als submodule in `external/bachelor-party-quest-pwa`
+
+## Ontwikkelen
+- Landing/marketing starten:
+```bash
+npm run dev
+# open http://localhost:8080/public/landing.html
+```
+
+- Originele PWA starten (submodule):
+```bash
+npm run pwa:dev
+# open de URL die Vite toont (meestal http://localhost:5173 of 8080)
+```
+
+- Builden van de PWA:
+```bash
+npm run pwa:build
+```
+
+Zorg dat je de submodule hebt gecloned/geïnitialiseerd:
+```bash
+git submodule update --init --recursive
+npm ci --prefix external/bachelor-party-quest-pwa
+```

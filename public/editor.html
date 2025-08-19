@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Event Builder — Bachelor Party Quest SaaS</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+      :root { --primary: #0b5bd3; --secondary: #111; --success: #10b981; --warning: #f59e0b; --error: #ef4444; }
+      * { box-sizing: border-box; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; color:#111; background:#f9fafb; }
+      .layout { display:grid; grid-template-columns: 380px 1fr; min-height:100vh; }
+      .sidebar { background:#fff; border-right:1px solid #e5e7eb; padding:20px; overflow-y:auto; }
+      .main { padding:24px; overflow-y:auto; }
+      .section { margin-bottom:24px; padding:16px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; }
+      .section h3 { margin:0 0 16px; font-size:16px; font-weight:600; color:#374151; }
+      .section h4 { margin:16px 0 8px; font-size:14px; font-weight:500; color:#6b7280; }
+      
+      label { display:block; font-size:12px; color:#6b7280; margin:8px 0 4px; font-weight:500; }
+      input[type="text"], input[type="url"], input[type="email"], textarea, select { 
+        width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;
+        transition: border-color 0.2s; background:#fff;
+      }
+      input:focus, textarea:focus, select:focus { outline:none; border-color: var(--primary); }
+      input[type="color"] { width:60px; height:40px; padding:0; border:1px solid #d1d5db; border-radius:8px; cursor:pointer; }
+      input[type="number"] { width:100px; }
+      textarea { min-height:80px; resize:vertical; }
+      
+      .btn { 
+        padding:10px 16px; border:1px solid #d1d5db; border-radius:8px; background:#fff; cursor:pointer; 
+        font-size:14px; font-weight:500; transition: all 0.2s; display:inline-flex; align-items:center; gap:6px;
+      }
+      .btn:hover { background:#f3f4f6; }
+      .btn.primary { background: var(--primary); color:#fff; border-color: var(--primary); }
+      .btn.primary:hover { background: #0952bd; }
+      .btn.success { background: var(--success); color:#fff; border-color: var(--success); }
+      .btn.success:hover { background: #059669; }
+      .btn.warning { background: var(--warning); color:#fff; border-color: var(--warning); }
+      .btn.error { background: var(--error); color:#fff; border-color: var(--error); }
+      .btn.small { padding:6px 10px; font-size:12px; }
+      
+      .stack { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+      .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+      .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+      
+      .preview { background:#fff; border-radius:12px; padding:24px; margin-bottom:24px; }
+      .hero { background: linear-gradient(180deg, rgba(11,91,211,0.08), transparent); border:1px solid #e5e7eb; border-radius:12px; padding:32px; text-align:center; }
+      .logo { height:40px; max-width:200px; }
+      .card { border:1px solid #e5e7eb; border-radius:8px; padding:16px; background:#fff; }
+      .card.interactive { cursor:pointer; transition: all 0.2s; }
+      .card.interactive:hover { border-color: var(--primary); transform:translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+      
+      .status { padding:12px 16px; border-radius:8px; margin:12px 0; font-size:14px; font-weight:500; }
+      .status.success { background:#d1fae5; color:#065f46; border:1px solid #a7f3d0; }
+      .status.error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+      .status.info { background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; }
+      .status.warning { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
+      
+      .tabs { display:flex; border-bottom:1px solid #e5e7eb; margin-bottom:20px; }
+      .tab { padding:12px 20px; cursor:pointer; border-bottom:2px solid transparent; font-weight:500; color:#6b7280; }
+      .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+      .tab-content { display:none; }
+      .tab-content.active { display:block; }
+      
+      .bingo-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin-top:16px; }
+      .bingo-cell { 
+        aspect-ratio:1; border:1px solid #e5e7eb; border-radius:6px; padding:8px; font-size:11px; 
+        display:flex; align-items:center; justify-content:center; text-align:center; background:#fff;
+        cursor:pointer; transition: all 0.2s;
+      }
+      .bingo-cell:hover { border-color: var(--primary); }
+      .bingo-cell.completed { background:#d1fae5; border-color:#10b981; }
+      
+      .treasure-list { display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+      .treasure-item { 
+        padding:12px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; 
+        cursor:pointer; transition: all 0.2s;
+      }
+      .treasure-item:hover { border-color: var(--primary); }
+      .treasure-item.found { background:#d1fae5; border-color:#10b981; }
+      
+      .form-row { display:flex; gap:12px; align-items:end; }
+      .form-row > * { flex:1; }
+      .form-row .btn { flex:none; }
+      
+      .event-header { 
+        background: linear-gradient(135deg, var(--primary), #1d4ed8); 
+        color:#fff; padding:24px; border-radius:12px; margin-bottom:24px; 
+      }
+      .event-header h1 { margin:0 0 8px; font-size:24px; }
+      .event-header p { margin:0; opacity:0.9; }
+      
+      .pricing-tier { 
+        border:2px solid #e5e7eb; border-radius:12px; padding:20px; text-align:center; 
+        transition: all 0.2s; cursor:pointer; 
+      }
+      .pricing-tier:hover { border-color: var(--primary); }
+      .pricing-tier.selected { border-color: var(--primary); background:#f0f7ff; }
+      .pricing-tier h4 { margin:0 0 8px; color: var(--primary); }
+      .pricing-tier .price { font-size:24px; font-weight:700; margin:8px 0; }
+      .pricing-tier .features { font-size:12px; color:#6b7280; }
+      
+      .modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; }
+      .modal.show { display:flex; align-items:center; justify-content:center; }
+      .modal-content { background:#fff; border-radius:12px; padding:24px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; }
+      
+      .progress-bar { background:#e5e7eb; height:8px; border-radius:4px; overflow:hidden; }
+      .progress-fill { background: var(--primary); height:100%; transition: width 0.3s; }
+      
+      @media (max-width: 1024px) {
+        .layout { grid-template-columns: 1fr; }
+        .sidebar { max-height:400px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="section">
+          <h3>🚀 Event Wizard</h3>
+          <label>Event Naam</label>
+          <input id="eventName" type="text" placeholder="Jelle's Bachelor Party" />
+          
+          <label>Event Datum</label>
+          <input id="eventDate" type="date" />
+          
+          <label>Event ID (automatisch)</label>
+          <input id="eventId" type="text" placeholder="wordt automatisch gegenereerd" readonly />
+          
+          <div class="stack" style="margin-top:12px;">
+            <button class="btn primary" id="createEvent">✨ Nieuw Event</button>
+            <button class="btn" id="loadEvent">📂 Laad Event</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h3>💾 Opslaan & Publiceren</h3>
+          <div class="stack">
+            <button class="btn" id="saveDraft">📝 Draft</button>
+            <button class="btn success" id="publish">🚀 Live</button>
+            <button class="btn" id="duplicate">📋 Dupliceer</button>
+          </div>
+          <button class="btn" id="download" style="width:100%; margin-top:8px;">⬇️ Download JSON</button>
+          <div id="status"></div>
+        </div>
+        
+        <div class="section">
+          <h3>🎨 Branding & Thema</h3>
+          <label>Event Naam</label>
+          <input id="branding.name" type="text" placeholder="Bachelor Party" />
+          
+          <div class="grid-2">
+            <div>
+              <label>Primaire Kleur</label>
+              <input id="branding.primary" type="color" />
+            </div>
+            <div>
+              <label>Secundaire Kleur</label>
+              <input id="branding.secondary" type="color" />
+            </div>
+          </div>
+          
+          <label>Logo URL</label>
+          <input id="branding.logoUrl" type="url" placeholder="https://example.com/logo.png" />
+          
+          <h4>Thema Presets</h4>
+          <div class="stack">
+            <button class="btn small" onclick="applyTheme('amsterdam')">🏛️ Amsterdam</button>
+            <button class="btn small" onclick="applyTheme('beach')">🏖️ Beach</button>
+            <button class="btn small" onclick="applyTheme('party')">🎉 Party</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h3>💰 Pricing Tier</h3>
+          <div id="pricingTiers">
+            <div class="pricing-tier" data-tier="basic">
+              <h4>Basic</h4>
+              <div class="price">€39</div>
+              <div class="features">250 foto's<br/>Standaard templates</div>
+            </div>
+            <div class="pricing-tier" data-tier="plus">
+              <h4>Plus</h4>
+              <div class="price">€99</div>
+              <div class="features">1.000 foto's<br/>Custom branding</div>
+            </div>
+            <div class="pricing-tier" data-tier="pro">
+              <h4>Pro</h4>
+              <div class="price">€199</div>
+              <div class="features">3.000 foto's<br/>Premium features</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      
+      <main class="main">
+        <div class="event-header">
+          <h1 id="eventTitle">Bachelor Party Quest Builder</h1>
+          <p id="eventSubtitle">Bouw je perfecte vrijgezellenfeest in minuten</p>
+        </div>
+        
+        <div class="tabs">
+          <div class="tab active" data-tab="preview">👁️ Preview</div>
+          <div class="tab" data-tab="content">📝 Content</div>
+          <div class="tab" data-tab="bingo">🎯 Bingo</div>
+          <div class="tab" data-tab="treasure">🗺️ Treasure Hunt</div>
+          <div class="tab" data-tab="settings">⚙️ Instellingen</div>
+        </div>
+        
+        <!-- Preview Tab -->
+        <div class="tab-content active" id="tab-preview">
+          <div class="preview">
+            <div class="hero">
+              <img id="preview.logo" class="logo" alt="logo" style="display:none;" />
+              <h1 id="preview.hero.title">Jelle's Laatste Keer</h1>
+              <p id="preview.hero.subtitle">Een epische bachelor party quest met bingo, challenges en meer!</p>
+              <div class="stack" style="justify-content:center; margin-top:20px;">
+                <button class="btn primary" id="preview.cta.demo">🎮 Start Quest</button>
+                <button class="btn" id="preview.cta.buy">🎰 Simply Wild</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid">
+            <div class="card">
+              <h3>🎯 Bingo 5×5</h3>
+              <p>25 uitdagingen met punten en fotobewijs</p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:40%"></div>
+              </div>
+              <small>10/25 voltooid</small>
+            </div>
+            <div class="card">
+              <h3>🗺️ Zoek de Rest</h3>
+              <p>Vind vrienden op geheime locaties</p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:66%"></div>
+              </div>
+              <small>2/3 gevonden</small>
+            </div>
+            <div class="card">
+              <h3>⚡ Live Challenges</h3>
+              <p>Real-time opdrachten van de admin</p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:100%"></div>
+              </div>
+              <small>3/3 voltooid</small>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Content Tab -->
+        <div class="tab-content" id="tab-content">
+          <div class="section">
+            <h3>📱 Hoofdpagina Teksten</h3>
+            <label>Hero Titel</label>
+            <input id="texts.hero.title" type="text" />
+            
+            <label>Hero Ondertitel</label>
+            <textarea id="texts.hero.subtitle"></textarea>
+            
+            <div class="grid-2">
+              <div>
+                <label>Primaire CTA</label>
+                <input id="texts.cta.demo" type="text" />
+              </div>
+              <div>
+                <label>Secundaire CTA</label>
+                <input id="texts.cta.buy" type="text" />
+              </div>
+            </div>
+          </div>
+          
+                  <div class="section">
+          <h3>📄 Pagina Instellingen</h3>
+          
+          <h4>Home/Welcome Pagina</h4>
+          <div class="grid-2">
+            <div>
+              <label>Welkom Titel</label>
+              <input id="pages.home.welcomeTitle" type="text" />
+            </div>
+            <div>
+              <label>Intro Tekst</label>
+              <textarea id="pages.home.introText"></textarea>
+            </div>
+          </div>
+          
+          <h4>Bingo/PlayerApp</h4>
+          <div class="grid-2">
+            <div>
+              <label>Titel</label>
+              <input id="pages.bingo.title" type="text" />
+            </div>
+            <div>
+              <label>Intro Tekst</label>
+              <input id="pages.bingo.intro" type="text" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>Punten per Opdracht</label>
+              <input id="pages.bingo.pointsPerTask" type="number" min="1" value="20" />
+            </div>
+            <div>
+              <label>Totaal Opdrachten</label>
+              <input id="pages.bingo.totalTasks" type="number" min="1" max="25" value="25" />
+            </div>
+          </div>
+          
+          <h4>Treasure Hunt</h4>
+          <div class="grid-2">
+            <div>
+              <label>Titel</label>
+              <input id="pages.treasure.title" type="text" />
+            </div>
+            <div>
+              <label>Intro Tekst</label>
+              <input id="pages.treasure.intro" type="text" />
+            </div>
+          </div>
+          
+          <h4>Main Hub</h4>
+          <div class="grid-2">
+            <div>
+              <label>Main Game CTA</label>
+              <input id="pages.hub.mainCta" type="text" />
+            </div>
+            <div>
+              <label>Simply Wild CTA</label>
+              <input id="pages.hub.simplyCta" type="text" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>Deal Shop CTA</label>
+              <input id="pages.hub.shopCta" type="text" />
+            </div>
+            <div>
+              <label>Photo Wall Handle</label>
+              <input id="pages.hub.photoWallHandle" type="text" />
+            </div>
+          </div>
+          
+          <h4>Deal Maker's Shop</h4>
+          <div class="grid-2">
+            <div>
+              <label>Shop Titel</label>
+              <input id="pages.shop.title" type="text" />
+            </div>
+            <div>
+              <label>Shop Ondertitel</label>
+              <input id="pages.shop.subtitle" type="text" />
+            </div>
+          </div>
+          
+          <h4>Simply Wild (Gokspel)</h4>
+          <div class="grid-2">
+            <div>
+              <label>Game Titel</label>
+              <input id="pages.simply.title" type="text" />
+            </div>
+            <div>
+              <label>Game Ondertitel</label>
+              <input id="pages.simply.subtitle" type="text" />
+            </div>
+          </div>
+        </div>
+        </div>
+        
+        <!-- Bingo Tab -->
+        <div class="tab-content" id="tab-bingo">
+          <div class="section">
+            <div class="stack" style="justify-content:space-between;">
+              <h3>🎯 Bingo Opdrachten (25 stuks)</h3>
+              <div class="stack">
+                <button class="btn" id="generateBingo">🎲 Auto-genereer</button>
+                <button class="btn" id="importBingo">📁 Importeer CSV</button>
+                <button class="btn" id="resetBingo">🔄 Reset</button>
+                <button class="btn" id="previewBingo">👁️ Preview Grid</button>
+              </div>
+            </div>
+            
+            <div class="bingo-grid" id="bingoGrid">
+              <!-- Dynamisch gevuld -->
+            </div>
+            
+            <div class="section" style="margin-top:20px;">
+              <h4>Bingo Grid Kleuren</h4>
+              <p class="text-sm" style="color:#6b7280; margin-bottom:12px;">Pas de kleuren van het 5x5 bingo grid aan:</p>
+              <div class="grid" style="grid-template-columns: repeat(5, 1fr); gap:8px; max-width:300px;">
+                <input type="color" id="color.0" value="#ec4899" title="Roze" />
+                <input type="color" id="color.1" value="#60a5fa" title="Blauw" />
+                <input type="color" id="color.2" value="#facc15" title="Geel" />
+                <input type="color" id="color.3" value="#f97316" title="Oranje" />
+                <input type="color" id="color.4" value="#34d399" title="Groen" />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Treasure Hunt Tab -->
+        <div class="tab-content" id="tab-treasure">
+          <div class="section">
+            <div class="stack" style="justify-content:space-between;">
+              <h3>🗺️ Treasure Hunt Locaties</h3>
+              <button class="btn" id="addTreasure">➕ Voeg Locatie Toe</button>
+            </div>
+            
+            <div class="treasure-list" id="treasureList">
+              <!-- Dynamisch gevuld -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Settings Tab -->
+        <div class="tab-content" id="tab-settings">
+          <div class="section">
+            <h3>⚙️ Event Instellingen</h3>
+            
+            <div class="grid-2">
+              <div>
+                <label>Max Spelers</label>
+                <input id="settings.maxPlayers" type="number" min="1" max="100" value="20" />
+              </div>
+              <div>
+                <label>Tijdslimiet (minuten)</label>
+                <input id="settings.timeLimit" type="number" min="0" value="0" placeholder="0 = geen limiet" />
+              </div>
+            </div>
+            
+            <h4>Game Features</h4>
+            <label><input type="checkbox" id="features.spectator" /> 👁️ Spectator View</label>
+            <label><input type="checkbox" id="features.dealShop" /> 🛒 Deal Maker's Shop</label>
+            <label><input type="checkbox" id="features.simplyWild" /> 🎰 Simply Wild Game</label>
+            <label><input type="checkbox" id="features.photoWall" /> 📸 Photo Wall</label>
+            <label><input type="checkbox" id="features.liveChat" /> 💬 Live Chat</label>
+            <label><input type="checkbox" id="features.treasureHunt" /> 🗺️ Treasure Hunt</label>
+            <label><input type="checkbox" id="features.countdownTimer" /> ⏰ Countdown Timer</label>
+            
+            <h4>Admin Features</h4>
+            <label><input type="checkbox" id="features.liveMessages" /> 📨 Live Admin Messages</label>
+            <label><input type="checkbox" id="features.liveChallenges" /> ⚡ Live Challenges</label>
+            <label><input type="checkbox" id="features.photoBackup" /> 💾 Photo Backup</label>
+            <label><input type="checkbox" id="features.offlineMode" /> 📱 Offline Support</label>
+            
+            <h4>Countdown Timer</h4>
+            <div class="grid-2">
+              <div>
+                <label>Target Datum</label>
+                <input id="settings.countdownDate" type="datetime-local" />
+              </div>
+              <div>
+                <label>Countdown Tekst</label>
+                <input id="settings.countdownText" type="text" placeholder="Tot het moment dat je geen vrij man meer bent" />
+              </div>
+            </div>
+            
+            <h4>Notificaties</h4>
+            <label><input type="checkbox" id="notifications.email" /> 📧 Email Updates</label>
+            <label><input type="checkbox" id="notifications.push" /> 📱 Push Notificaties</label>
+            <label><input type="checkbox" id="notifications.vibration" /> 📳 Trillingen</label>
+          </div>
+        </div>
+      </main>
+    </div>
+    
+    <!-- Modal voor Bingo Edit -->
+    <div class="modal" id="bingoModal">
+      <div class="modal-content">
+        <h3>✏️ Bingo Opdracht Bewerken</h3>
+        <label>Titel</label>
+        <input id="modalBingoTitle" type="text" />
+        <label>Beschrijving (optioneel)</label>
+        <textarea id="modalBingoDescription"></textarea>
+        <label>Punten</label>
+        <input id="modalBingoPoints" type="number" min="1" value="10" />
+        <div class="stack" style="margin-top:20px; justify-content:flex-end;">
+          <button class="btn" onclick="closeBingoModal()">Annuleer</button>
+          <button class="btn primary" onclick="saveBingoItem()">Opslaan</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal voor Treasure Hunt Edit -->
+    <div class="modal" id="treasureModal">
+      <div class="modal-content">
+        <h3>🗺️ Treasure Locatie Bewerken</h3>
+        <label>Locatie Naam</label>
+        <input id="modalTreasureName" type="text" />
+        <label>Hint/Vraag</label>
+        <textarea id="modalTreasureHint"></textarea>
+        <label>GPS Coördinaten (optioneel)</label>
+        <input id="modalTreasureGPS" type="text" placeholder="52.3676, 4.9041" />
+        <div class="stack" style="margin-top:20px; justify-content:flex-end;">
+          <button class="btn" onclick="closeTreasureModal()">Annuleer</button>
+          <button class="btn primary" onclick="saveTreasureItem()">Opslaan</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let model = null;
+      let supabase = null;
+      let currentBingoIndex = -1;
+      let currentTreasureIndex = -1;
+
+      // Initialize Supabase
+      const SUPABASE_URL = "https://jqavewxbfkbtrrvmrzdq.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxYXZld3hiZmtidHJydm1yemRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxMDI3NTYsImV4cCI6MjA2ODY3ODc1Nn0.UB_JmGeUM6ypYGtfuAf0Z4NXhafl2Jf1JaTArEWZ5eM";
+
+      async function initSupabase() {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+
+      const $ = (id) => document.getElementById(id);
+      
+      // Helper functions
+      function generateEventId(name) {
+        return name.toLowerCase()
+          .replace(/[^a-z0-9\s]/g, '')
+          .replace(/\s+/g, '-')
+          .substring(0, 30) + '-' + Date.now().toString(36);
+      }
+
+      function setByPath(obj, path, value) {
+        const keys = path.split('.');
+        let cur = obj;
+        for (let i = 0; i < keys.length - 1; i++) {
+          const k = keys[i];
+          if (!(k in cur)) cur[k] = {};
+          cur = cur[k];
+        }
+        cur[keys[keys.length - 1]] = value;
+      }
+
+      function getByPath(obj, path, fallback = '') {
+        return path.split('.').reduce((acc, k) => acc && acc[k] !== undefined ? acc[k] : null, obj) ?? fallback;
+      }
+
+      function showStatus(message, type = 'info') {
+        const status = $('status');
+        status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        setTimeout(() => status.innerHTML = '', 5000);
+      }
+
+      // Theme presets
+      function applyTheme(theme) {
+        const themes = {
+          amsterdam: {
+            primary: '#dc2626',
+            secondary: '#111827',
+            name: 'Amsterdam Adventure'
+          },
+          beach: {
+            primary: '#0891b2',
+            secondary: '#f59e0b',
+            name: 'Beach Party'
+          },
+          party: {
+            primary: '#7c3aed',
+            secondary: '#ec4899',
+            name: 'Party Time'
+          }
+        };
+        
+        const t = themes[theme];
+        if (t) {
+          setByPath(model, 'branding.primary', t.primary);
+          setByPath(model, 'branding.secondary', t.secondary);
+          setByPath(model, 'branding.name', t.name);
+          populateForm();
+          render();
+          showStatus(`${t.name} thema toegepast!`, 'success');
+        }
+      }
+
+      // Tab switching
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('tab')) {
+          const targetTab = e.target.dataset.tab;
+          
+          // Update tab buttons
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          e.target.classList.add('active');
+          
+          // Update tab content
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          document.getElementById(`tab-${targetTab}`).classList.add('active');
+        }
+      });
+
+      // Pricing tier selection
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.pricing-tier')) {
+          const tier = e.target.closest('.pricing-tier');
+          document.querySelectorAll('.pricing-tier').forEach(t => t.classList.remove('selected'));
+          tier.classList.add('selected');
+          
+          const tierType = tier.dataset.tier;
+          setByPath(model, 'billing.tier', tierType);
+          showStatus(`${tierType.charAt(0).toUpperCase() + tierType.slice(1)} tier geselecteerd`, 'success');
+        }
+      });
+
+      // Render functions
+      function applyBranding() {
+        const primary = getByPath(model, 'branding.primary', '#0b5bd3');
+        const secondary = getByPath(model, 'branding.secondary', '#111111');
+        document.documentElement.style.setProperty('--primary', primary);
+        document.documentElement.style.setProperty('--secondary', secondary);
+        
+        const logoUrl = getByPath(model, 'branding.logoUrl', '');
+        const logoEl = $('preview.logo');
+        if (logoUrl) {
+          logoEl.src = logoUrl;
+          logoEl.style.display = 'block';
+        } else {
+          logoEl.style.display = 'none';
+        }
+        
+        $('eventTitle').textContent = getByPath(model, 'branding.name', 'Bachelor Party');
+      }
+
+      function render() {
+        applyBranding();
+        $('preview.hero.title').textContent = getByPath(model, 'texts.hero.title');
+        $('preview.hero.subtitle').textContent = getByPath(model, 'texts.hero.subtitle');
+        $('preview.cta.demo').textContent = getByPath(model, 'texts.cta.demo');
+        $('preview.cta.buy').textContent = getByPath(model, 'texts.cta.buy');
+        
+        renderBingoGrid();
+        renderTreasureList();
+      }
+
+      function renderBingoGrid() {
+        const grid = $('bingoGrid');
+        grid.innerHTML = '';
+        
+        const bingoTasks = getByPath(model, 'content.bingo', []);
+        
+        for (let i = 0; i < 25; i++) {
+          const cell = document.createElement('div');
+          cell.className = 'bingo-cell';
+          cell.onclick = () => editBingoItem(i);
+          
+          const task = bingoTasks[i];
+          if (task && task.title) {
+            cell.textContent = task.title;
+            if (task.completed) cell.classList.add('completed');
+          } else {
+            cell.textContent = `Opdracht ${i + 1}`;
+            cell.style.opacity = '0.5';
+          }
+          
+          grid.appendChild(cell);
+        }
+      }
+
+      function renderTreasureList() {
+        const list = $('treasureList');
+        list.innerHTML = '';
+        
+        const treasures = getByPath(model, 'content.treasure', []);
+        
+        treasures.forEach((treasure, index) => {
+          const item = document.createElement('div');
+          item.className = 'treasure-item';
+          item.onclick = () => editTreasureItem(index);
+          
+          item.innerHTML = `
+            <strong>${treasure.name || `Locatie ${index + 1}`}</strong>
+            <p style="margin:4px 0 0; color:#6b7280; font-size:12px;">${treasure.hint || 'Geen hint ingesteld'}</p>
+          `;
+          
+          if (treasure.found) item.classList.add('found');
+          list.appendChild(item);
+        });
+      }
+
+      // Bingo functions
+      function editBingoItem(index) {
+        currentBingoIndex = index;
+        const bingoTasks = getByPath(model, 'content.bingo', []);
+        const task = bingoTasks[index] || {};
+        
+        $('modalBingoTitle').value = task.title || '';
+        $('modalBingoDescription').value = task.description || '';
+        $('modalBingoPoints').value = task.points || 10;
+        
+        $('bingoModal').classList.add('show');
+      }
+
+      function closeBingoModal() {
+        $('bingoModal').classList.remove('show');
+      }
+
+      function saveBingoItem() {
+        if (currentBingoIndex === -1) return;
+        
+        const bingoTasks = getByPath(model, 'content.bingo', []);
+        while (bingoTasks.length <= currentBingoIndex) {
+          bingoTasks.push({});
+        }
+        
+        bingoTasks[currentBingoIndex] = {
+          title: $('modalBingoTitle').value,
+          description: $('modalBingoDescription').value,
+          points: parseInt($('modalBingoPoints').value) || 10,
+          completed: false
+        };
+        
+        setByPath(model, 'content.bingo', bingoTasks);
+        renderBingoGrid();
+        closeBingoModal();
+        showStatus('Bingo opdracht opgeslagen!', 'success');
+      }
+
+      function generateBingo() {
+        const defaultTasks = [
+          "Maak een selfie met een vreemdeling",
+          "Zing karaoke",
+          "Drink een shotje",
+          "Dans op straat",
+          "Krijg een telefoonnummer",
+          "Doe een handstand",
+          "Koop iets geks",
+          "Maak een TikTok",
+          "Eet iets vies",
+          "Win een spelletje",
+          "Krijg een gratis drankje",
+          "Maak een foto met een dier",
+          "Doe alsof je een standbeeld bent",
+          "Vertel een grap",
+          "Geef iemand een compliment",
+          "Maak een foto van je voeten",
+          "Zing het volkslied",
+          "Doe de chicken dance",
+          "Maak een selfie in de spiegel",
+          "Koop een ronde voor iedereen",
+          "Maak een foto met politie",
+          "Doe een push-up",
+          "Maak een foto van je eten",
+          "Geef iemand een knuffel",
+          "Maak een groepsfoto"
+        ];
+        
+        const bingoTasks = defaultTasks.map((title, index) => ({
+          title,
+          description: '',
+          points: 10,
+          completed: false
+        }));
+        
+        setByPath(model, 'content.bingo', bingoTasks);
+        renderBingoGrid();
+        showStatus('25 bingo opdrachten gegenereerd!', 'success');
+      }
+
+      // Treasure hunt functions
+      function editTreasureItem(index) {
+        currentTreasureIndex = index;
+        const treasures = getByPath(model, 'content.treasure', []);
+        const treasure = treasures[index] || {};
+        
+        $('modalTreasureName').value = treasure.name || '';
+        $('modalTreasureHint').value = treasure.hint || '';
+        $('modalTreasureGPS').value = treasure.gps || '';
+        
+        $('treasureModal').classList.add('show');
+      }
+
+      function closeTreasureModal() {
+        $('treasureModal').classList.remove('show');
+      }
+
+      function saveTreasureItem() {
+        const treasures = getByPath(model, 'content.treasure', []);
+        
+        if (currentTreasureIndex === -1) {
+          // Add new
+          treasures.push({
+            name: $('modalTreasureName').value,
+            hint: $('modalTreasureHint').value,
+            gps: $('modalTreasureGPS').value,
+            found: false
+          });
+        } else {
+          // Edit existing
+          while (treasures.length <= currentTreasureIndex) {
+            treasures.push({});
+          }
+          
+          treasures[currentTreasureIndex] = {
+            name: $('modalTreasureName').value,
+            hint: $('modalTreasureHint').value,
+            gps: $('modalTreasureGPS').value,
+            found: false
+          };
+        }
+        
+        setByPath(model, 'content.treasure', treasures);
+        renderTreasureList();
+        closeTreasureModal();
+        showStatus('Treasure locatie opgeslagen!', 'success');
+      }
+
+      function addTreasure() {
+        currentTreasureIndex = -1;
+        $('modalTreasureName').value = '';
+        $('modalTreasureHint').value = '';
+        $('modalTreasureGPS').value = '';
+        $('treasureModal').classList.add('show');
+      }
+
+      // Form handling
+      function populateForm() {
+        const fields = [
+          'branding.name', 'branding.primary', 'branding.secondary', 'branding.logoUrl',
+          'texts.hero.title', 'texts.hero.subtitle', 'texts.cta.demo', 'texts.cta.buy',
+          'pages.bingo.title', 'pages.bingo.intro', 'pages.treasure.title', 'pages.treasure.intro',
+          'pages.hub.mainCta', 'pages.hub.simplyCta',
+          'settings.maxPlayers', 'settings.timeLimit'
+        ];
+        
+        fields.forEach((path) => {
+          const el = $(path);
+          if (!el) return;
+          const val = getByPath(model, path);
+          if (el.type === 'color' && /^#/.test(val)) {
+            el.value = val;
+          } else if (el.type === 'number') {
+            el.value = val || '';
+          } else {
+            el.value = val || '';
+          }
+        });
+        
+        // Checkboxes
+        const checkboxes = [
+          'features.spectator', 'features.dealShop', 'features.simplyWild', 
+          'features.photoWall', 'features.liveChat',
+          'notifications.email', 'notifications.push'
+        ];
+        
+        checkboxes.forEach((path) => {
+          const el = $(path);
+          if (el) el.checked = getByPath(model, path, false);
+        });
+        
+        // Event fields
+        $('eventName').value = getByPath(model, 'event.name', '');
+        $('eventDate').value = getByPath(model, 'event.date', '');
+        $('eventId').value = getByPath(model, 'event.id', '');
+      }
+
+      function bindInputs() {
+        const fields = [
+          'branding.name', 'branding.primary', 'branding.secondary', 'branding.logoUrl',
+          'texts.hero.title', 'texts.hero.subtitle', 'texts.cta.demo', 'texts.cta.buy',
+          'pages.bingo.title', 'pages.bingo.intro', 'pages.treasure.title', 'pages.treasure.intro',
+          'pages.hub.mainCta', 'pages.hub.simplyCta',
+          'settings.maxPlayers', 'settings.timeLimit'
+        ];
+        
+        fields.forEach((path) => {
+          const el = $(path);
+          if (el) {
+            el.addEventListener('input', () => {
+              setByPath(model, path, el.value);
+              render();
+            });
+          }
+        });
+        
+        // Checkboxes
+        const checkboxes = [
+          'features.spectator', 'features.dealShop', 'features.simplyWild', 
+          'features.photoWall', 'features.liveChat',
+          'notifications.email', 'notifications.push'
+        ];
+        
+        checkboxes.forEach((path) => {
+          const el = $(path);
+          if (el) {
+            el.addEventListener('change', () => {
+              setByPath(model, path, el.checked);
+            });
+          }
+        });
+      }
+
+      // Event management
+      async function createEvent() {
+        const name = $('eventName').value.trim();
+        const date = $('eventDate').value;
+        
+        if (!name) {
+          showStatus('Voer een event naam in', 'error');
+          return;
+        }
+        
+        const eventId = generateEventId(name);
+        
+        // Load default template and customize
+        await loadDefault();
+        
+        setByPath(model, 'event.id', eventId);
+        setByPath(model, 'event.name', name);
+        setByPath(model, 'event.date', date);
+        setByPath(model, 'branding.name', name);
+        setByPath(model, 'texts.hero.title', `${name} - De Ultieme Quest!`);
+        
+        $('eventId').value = eventId;
+        
+        populateForm();
+        render();
+        showStatus('Nieuw event aangemaakt!', 'success');
+      }
+
+      async function loadDefault() {
+        try {
+          const res = await fetch('/templates/default-template.json');
+          model = await res.json();
+          
+          // Ensure all required structure exists
+          if (!model.content) model.content = {};
+          if (!model.content.bingo) model.content.bingo = [];
+          if (!model.content.treasure) model.content.treasure = [];
+          if (!model.event) model.event = {};
+          if (!model.settings) model.settings = {};
+          if (!model.features) model.features = {};
+          if (!model.notifications) model.notifications = {};
+          if (!model.billing) model.billing = {};
+          
+          populateForm();
+          render();
+          showStatus('Default template geladen', 'success');
+        } catch (e) {
+          showStatus('Fout bij laden default template', 'error');
+          console.error(e);
+        }
+      }
+
+      async function loadEvent() {
+        const eventId = $('eventId').value.trim();
+        if (!eventId) {
+          showStatus('Voer een event ID in', 'error');
+          return;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('event_templates')
+            .select('data')
+            .eq('event_id', eventId)
+            .eq('is_published', true)
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (error) throw error;
+          
+          if (data?.data) {
+            model = data.data;
+            populateForm();
+            render();
+            showStatus('Event template geladen', 'success');
+          } else {
+            showStatus('Geen template gevonden voor dit event', 'error');
+          }
+        } catch (e) {
+          showStatus('Fout bij laden event template', 'error');
+          console.error(e);
+        }
+      }
+
+      async function saveDraft() {
+        const eventId = getByPath(model, 'event.id', '');
+        if (!eventId) {
+          showStatus('Maak eerst een event aan', 'error');
+          return;
+        }
+
+        try {
+          const { error } = await supabase
+            .from('event_templates')
+            .upsert({
+              event_id: eventId,
+              name: 'Draft',
+              data: model,
+              is_published: false
+            });
+
+          if (error) throw error;
+          showStatus('Draft opgeslagen', 'success');
+        } catch (e) {
+          showStatus('Fout bij opslaan draft', 'error');
+          console.error(e);
+        }
+      }
+
+      async function publish() {
+        const eventId = getByPath(model, 'event.id', '');
+        if (!eventId) {
+          showStatus('Maak eerst een event aan', 'error');
+          return;
+        }
+
+        try {
+          const { error } = await supabase
+            .from('event_templates')
+            .upsert({
+              event_id: eventId,
+              name: 'Published',
+              data: model,
+              is_published: true
+            });
+
+          if (error) throw error;
+          showStatus('Event gepubliceerd! 🚀', 'success');
+        } catch (e) {
+          showStatus('Fout bij publiceren', 'error');
+          console.error(e);
+        }
+      }
+
+      function downloadJSON() {
+        const data = new Blob([JSON.stringify(model, null, 2)], {type:'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(data);
+        a.download = `${getByPath(model, 'event.id', 'event')}-template.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      // Event listeners
+      $('createEvent').addEventListener('click', createEvent);
+      $('loadEvent').addEventListener('click', loadEvent);
+      $('saveDraft').addEventListener('click', saveDraft);
+      $('publish').addEventListener('click', publish);
+      $('download').addEventListener('click', downloadJSON);
+      $('generateBingo').addEventListener('click', generateBingo);
+      $('addTreasure').addEventListener('click', addTreasure);
+
+      // Initialize
+      initSupabase().then(() => {
+        loadDefault();
+        bindInputs();
+      });
+
+      // Close modals on click outside
+      window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+          e.target.classList.remove('show');
+        }
+      });
+    </script>
+  </body>
+</html>

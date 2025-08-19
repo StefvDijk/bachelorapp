@@ -8,7 +8,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pwa:dev": "npm run dev --prefix external/bachelor-party-quest-pwa",
+    "pwa:build": "npm run build --prefix external/bachelor-party-quest-pwa",
+    "pwa:preview": "npm run preview --prefix external/bachelor-party-quest-pwa"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

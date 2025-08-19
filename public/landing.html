@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bachelor Party Quest — Vrijgezellenfeest PWA</title>
+    <meta name="description" content="Kant-en-klare PWA voor vrijgezellenfeesten: bingo, challenges, foto-feed en spectator view. Start in 10 minuten." />
+    <meta property="og:title" content="Bachelor Party Quest" />
+    <meta property="og:description" content="Vrijgezellenfeest PWA met bingo, challenges, foto-feed en spectator view." />
+    <meta property="og:type" content="website" />
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; color: #111; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+      header { padding: 24px 0; display: flex; align-items: center; justify-content: space-between; }
+      a { color: #0b5bd3; text-decoration: none; }
+      .hero { padding: 56px 0; display: grid; gap: 20px; }
+      .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+      .btn { padding: 12px 16px; border-radius: 8px; border: 1px solid #ddd; }
+      .btn.primary { background: #0b5bd3; color: #fff; border-color: #0b5bd3; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      .card { border: 1px solid #eee; border-radius: 12px; padding: 16px; }
+      footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid #eee; font-size: 14px; color: #555; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <strong>Bachelor Party Quest</strong>
+        <nav class="nav">
+          <a href="/">Open app</a>
+          &nbsp;•&nbsp;
+          <a href="/public/editor.html">Editor (no-code)</a>
+          &nbsp;•&nbsp;
+          <a href="/public/privacy.html">Privacy</a>
+          &nbsp;•&nbsp;
+          <a href="/public/terms.html">Voorwaarden</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <h1>Vrijgezellenfeest? Regel een interactieve game-night in 10 minuten.</h1>
+        <p>Bingo 5×5, zoektochten, live challenges en foto-feed. Werkt direct op elke smartphone, met spectator view.</p>
+        <div class="btns">
+          <a class="btn primary" href="/">Probeer de demo</a>
+          <a class="btn" href="/">Koop je event</a>
+          <a class="btn" href="/public/editor.html">Pas snel aan (no-code)</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Waarom dit werkt</h2>
+        <div class="grid">
+          <div class="card"><strong>Smartphone-first</strong><br/>Geen app-store; PWA werkt direct.</div>
+          <div class="card"><strong>Realtime & offline</strong><br/>Scoreboard, berichten en uploads in wachtrij.</div>
+          <div class="card"><strong>Thematisch</strong><br/>Kleuren, logo en templates per event.</div>
+          <div class="card"><strong>Spectator view</strong><br/>Iedereen kijkt live mee met de feed.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Prijzen (per event)</h2>
+        <div class="grid">
+          <div class="card"><strong>Basic €39</strong><br/>250 foto’s, standaard templates</div>
+          <div class="card"><strong>Plus €99</strong><br/>1.000 foto’s, custom thema/logo, domein alias</div>
+          <div class="card"><strong>Pro €199</strong><br/>3.000 foto’s, premium templates, export, support</div>
+        </div>
+      </section>
+
+      <footer>
+        © <span id="y"></span> Bachelor Party Quest — <a href="/public/privacy.html">Privacy</a> — <a href="/public/terms.html">Voorwaarden</a>
+      </footer>
+    </div>
+    <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+  </body>
+</html>

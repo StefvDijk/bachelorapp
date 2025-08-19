@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Advanced Event Builder — Bachelor Party Quest SaaS</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+      :root { --primary: #0b5bd3; --secondary: #111; --success: #10b981; --warning: #f59e0b; --error: #ef4444; }
+      * { box-sizing: border-box; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; color:#111; background:#f9fafb; }
+      .layout { display:grid; grid-template-columns: 320px 1fr; min-height:100vh; }
+      .sidebar { background:#fff; border-right:1px solid #e5e7eb; padding:20px; overflow-y:auto; }
+      .main { padding:24px; overflow-y:auto; }
+      .section { margin-bottom:24px; padding:16px; background:#fff; border-radius:8px; border:1px solid #e5e7eb; }
+      
+      h1 { margin:0 0 8px; color:var(--primary); font-size:24px; }
+      h2 { margin:0 0 16px; color:#374151; font-size:18px; }
+      h3 { margin:0 0 12px; color:#374151; font-size:16px; }
+      h4 { margin:16px 0 8px; color:#6b7280; font-size:14px; font-weight:600; }
+      
+      .btn { 
+        background: var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:6px; 
+        cursor:pointer; font-weight:500; font-size:14px; transition: all 0.2s;
+      }
+      .btn:hover { background: #0a52c6; transform:translateY(-1px); }
+      .btn.secondary { background:#6b7280; }
+      .btn.success { background:var(--success); }
+      .btn.warning { background:var(--warning); }
+      .btn.small { padding:6px 12px; font-size:12px; }
+      
+      .stack { display:flex; gap:8px; align-items:center; }
+      .grid { display:grid; gap:12px; }
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+      
+      label { display:block; margin-bottom:6px; font-weight:500; color:#374151; font-size:14px; }
+      input, textarea, select { 
+        width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; 
+        font-size:14px; margin-bottom:12px; transition: border-color 0.2s;
+      }
+      input:focus, textarea:focus, select:focus { outline:none; border-color:var(--primary); box-shadow: 0 0 0 3px rgba(11,91,211,0.1); }
+      textarea { resize:vertical; min-height:80px; }
+      
+      .tabs { display:flex; flex-wrap:wrap; border-bottom:1px solid #e5e7eb; margin-bottom:20px; }
+      .tab { 
+        padding:8px 12px; cursor:pointer; border-bottom:2px solid transparent; 
+        font-weight:500; color:#6b7280; font-size:13px; white-space:nowrap;
+      }
+      .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+      .tab-content { display:none; }
+      .tab-content.active { display:block; }
+      
+      .feature-toggle { 
+        margin: 16px 0; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; 
+        transition: all 0.2s;
+      }
+      .feature-toggle:hover { border-color: #cbd5e1; }
+      .feature-toggle.premium { 
+        border-color: #fbbf24; background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); 
+      }
+      .feature-toggle.enabled { border-color: var(--primary); background: #f0f9ff; }
+      
+      .feature-config { 
+        margin-left: 24px; margin-top: 12px; padding: 16px; 
+        background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--primary);
+        display: none;
+      }
+      .feature-config.active { display: block; }
+      
+      .premium-badge { 
+        background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; 
+        padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; 
+      }
+      
+      .category-header {
+        background: linear-gradient(135deg, var(--primary), #1e40af);
+        color: white; padding: 12px 16px; border-radius: 8px; margin: 20px 0 16px;
+        font-weight: 600; text-align: center;
+      }
+      
+      .feature-count {
+        background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 12px;
+        font-size: 11px; margin-left: 8px;
+      }
+      
+      .status { padding:12px 16px; border-radius:8px; margin:12px 0; font-size:14px; font-weight:500; }
+      .status.success { background:#d1fae5; color:#065f46; border:1px solid #a7f3d0; }
+      .status.error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+      .status.info { background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; }
+      .status.warning { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <h1>🎉 Advanced Event Builder</h1>
+        <p style="color:#6b7280; font-size:14px; margin-bottom:24px;">
+          Maak de ultieme bachelor party experience met alle features die je kunt bedenken!
+        </p>
+        
+        <div class="section">
+          <h3>📊 Feature Overview</h3>
+          <div id="featureStats">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; font-size:12px;">
+              <div>✅ Enabled: <span id="enabledCount">0</span></div>
+              <div>⭐ Premium: <span id="premiumCount">0</span></div>
+              <div>📱 Basic: <span id="basicCount">0</span></div>
+              <div>💰 Total: <span id="totalCount">0</span></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h3>🚀 Quick Actions</h3>
+          <button class="btn" id="saveTemplate">💾 Save Template</button>
+          <button class="btn secondary" id="loadTemplate">📂 Load Template</button>
+          <button class="btn success" id="previewEvent">👁️ Preview Event</button>
+          <button class="btn warning" id="exportConfig">📤 Export Config</button>
+        </div>
+        
+        <div id="statusDisplay"></div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="main">
+        <div class="tabs">
+          <div class="tab active" data-tab="core">🎯 Core Features</div>
+          <div class="tab" data-tab="drinking">🍻 Drinking</div>
+          <div class="tab" data-tab="social">👥 Social</div>
+          <div class="tab" data-tab="competition">🏆 Competition</div>
+          <div class="tab" data-tab="media">📱 Media</div>
+          <div class="tab" data-tab="location">📍 Location</div>
+          <div class="tab" data-tab="party">🎊 Party</div>
+          <div class="tab" data-tab="economics">💰 Economics</div>
+          <div class="tab" data-tab="settings">⚙️ Settings</div>
+        </div>
+        
+        <!-- Core Features Tab -->
+        <div class="tab-content active" id="tab-core">
+          <div class="category-header">🎯 Essential Bachelor Party Features</div>
+          
+          <div class="feature-toggle enabled" data-feature="bingo">
+            <label><input type="checkbox" id="features.bingo" checked /> 🎯 Bingo 5×5 Grid <span class="feature-count">Core</span></label>
+            <div class="feature-config active">
+              <div class="grid-2">
+                <div><label>Punten per Opdracht</label><input id="bingo.pointsPerTask" type="number" min="1" value="20" /></div>
+                <div><label>Totaal Opdrachten</label><input id="bingo.totalTasks" type="number" min="1" max="25" value="25" /></div>
+              </div>
+              <div><label>Auto-genereer Opdrachten</label><button class="btn small" id="generateBingo">🎲 Generate</button></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle enabled" data-feature="treasureHunt">
+            <label><input type="checkbox" id="features.treasureHunt" checked /> 🗺️ Treasure Hunt <span class="feature-count">Core</span></label>
+            <div class="feature-config active">
+              <div class="grid-2">
+                <div><label>Aantal Locaties</label><input id="treasure.locationCount" type="number" min="1" max="10" value="3" /></div>
+                <div><label>Punten per Locatie</label><input id="treasure.pointsPerLocation" type="number" min="1" value="30" /></div>
+              </div>
+              <div><label>GPS Verificatie</label><input type="checkbox" id="treasure.gpsVerification" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle enabled" data-feature="photoWall">
+            <label><input type="checkbox" id="features.photoWall" checked /> 📸 Photo Wall <span class="feature-count">Core</span></label>
+            <div class="feature-config active">
+              <div class="grid-2">
+                <div><label>Max Foto's per User</label><input id="photoWall.maxPhotos" type="number" min="1" value="50" /></div>
+                <div><label>Auto-backup</label><input type="checkbox" id="photoWall.autoBackup" checked /></div>
+              </div>
+              <div><label>Foto Compressie</label><select id="photoWall.compression"><option>Hoog</option><option>Medium</option><option>Laag</option></select></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle enabled" data-feature="dealShop">
+            <label><input type="checkbox" id="features.dealShop" checked /> 🛒 Deal Maker's Shop <span class="feature-count">Core</span></label>
+            <div class="feature-config active">
+              <div><label>Shop Items</label><textarea id="dealShop.items" placeholder="Skip Opdracht - 50 punten\nPunten Booster - 30 punten\nHint Helper - 25 punten"></textarea></div>
+              <div><label>Dynamic Pricing</label><input type="checkbox" id="dealShop.dynamicPricing" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle enabled" data-feature="simplyWild">
+            <label><input type="checkbox" id="features.simplyWild" checked /> 🎰 Simply Wild Game <span class="feature-count">Core</span></label>
+            <div class="feature-config active">
+              <div class="grid-2">
+                <div><label>Min Bet</label><input id="simplyWild.minBet" type="number" min="1" value="5" /></div>
+                <div><label>Max Bet</label><input id="simplyWild.maxBet" type="number" min="1" value="100" /></div>
+              </div>
+              <div><label>Jackpot Enabled</label><input type="checkbox" id="simplyWild.jackpot" checked /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="spectatorView">
+            <label><input type="checkbox" id="features.spectatorView" /> 👁️ Spectator View <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Public Link</label><input type="checkbox" id="spectator.publicLink" checked /></div>
+              <div><label>Real-time Updates</label><input type="checkbox" id="spectator.realtime" checked /></div>
+              <div><label>Photo Feed</label><input type="checkbox" id="spectator.photoFeed" checked /></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Drinking Games Tab -->
+        <div class="tab-content" id="tab-drinking">
+          <div class="category-header">🍻 Drinking Games & Challenges <span class="feature-count">6 Features</span></div>
+          
+          <div class="feature-toggle" data-feature="beerPong">
+            <label><input type="checkbox" id="features.beerPong" /> 🏓 Beer Pong Tournament <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Tournament Format</label><select id="beerPong.format"><option>Single Elimination</option><option>Round Robin</option><option>Swiss</option></select></div>
+                <div><label>Teams</label><input id="beerPong.teams" type="number" min="2" max="16" value="8" /></div>
+              </div>
+              <div><label>Prize (punten)</label><input id="beerPong.prize" type="number" min="0" value="100" /></div>
+              <div><label>Bracket Visualization</label><input type="checkbox" id="beerPong.bracket" checked /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="shotRoulette">
+            <label><input type="checkbox" id="features.shotRoulette" /> 🎰 Shot Roulette <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Shot Types (1 per regel)</label><textarea id="shotRoulette.types" placeholder="Vodka\nTequila\nRum\nWhiskey\nJager\nSambuca"></textarea></div>
+              <div class="grid-2">
+                <div><label>Cost (punten)</label><input id="shotRoulette.cost" type="number" min="0" value="10" /></div>
+                <div><label>Reward (punten)</label><input id="shotRoulette.reward" type="number" min="0" value="25" /></div>
+              </div>
+              <div><label>Spin Animation</label><input type="checkbox" id="shotRoulette.animation" checked /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="neverHaveIEver">
+            <label><input type="checkbox" id="features.neverHaveIEver" /> 🙈 Never Have I Ever <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Custom Questions</label><textarea id="neverHaveIEver.questions" placeholder="Never have I ever... been to jail\nNever have I ever... kissed a stranger\nNever have I ever... lied about my age"></textarea></div>
+              <div class="grid-2">
+                <div><label>Points per Round</label><input id="neverHaveIEver.points" type="number" min="0" value="5" /></div>
+                <div><label>Rounds per Game</label><input id="neverHaveIEver.rounds" type="number" min="5" value="10" /></div>
+              </div>
+              <div><label>Anonymous Mode</label><input type="checkbox" id="neverHaveIEver.anonymous" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="truthOrDare">
+            <label><input type="checkbox" id="features.truthOrDare" /> 😈 Truth or Dare <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Truth Questions</label><textarea id="truthOrDare.truths" placeholder="What's your biggest fear?\nWho was your first kiss?\nWhat's your most embarrassing moment?"></textarea></div>
+                <div><label>Dare Challenges</label><textarea id="truthOrDare.dares" placeholder="Do 10 push-ups\nSing a song in public\nText your ex"></textarea></div>
+              </div>
+              <div><label>Difficulty Levels</label><select id="truthOrDare.difficulty"><option>Mild</option><option>Medium</option><option>Spicy</option></select></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle premium" data-feature="drinkingPenalty">
+            <label><input type="checkbox" id="features.drinkingPenalty" /> 🚨 Drinking Penalty System <span class="premium-badge">PREMIUM</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Penalty Threshold (verloren punten)</label><input id="drinkingPenalty.threshold" type="number" min="1" value="20" /></div>
+                <div><label>Penalty Type</label><select id="drinkingPenalty.type"><option>Shot</option><option>Beer</option><option>Custom Drink</option></select></div>
+              </div>
+              <div><label>Grace Period (minuten)</label><input id="drinkingPenalty.gracePeriod" type="number" min="0" value="5" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle premium" data-feature="drinkingGame">
+            <label><input type="checkbox" id="features.drinkingGame" /> 🍺 Custom Drinking Game <span class="premium-badge">PREMIUM</span></label>
+            <div class="feature-config">
+              <div><label>Game Rules</label><textarea id="drinkingGame.rules" placeholder="Beschrijf je custom drinking game rules hier..."></textarea></div>
+              <div class="grid-2">
+                <div><label>Min Spelers</label><input id="drinkingGame.minPlayers" type="number" min="2" value="3" /></div>
+                <div><label>Max Spelers</label><input id="drinkingGame.maxPlayers" type="number" min="2" value="10" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Social Tab -->
+        <div class="tab-content" id="tab-social">
+          <div class="category-header">👥 Social & Team Features <span class="feature-count">5 Features</span></div>
+          
+          <div class="feature-toggle" data-feature="teamBattle">
+            <label><input type="checkbox" id="features.teamBattle" /> ⚔️ Team Battle Mode <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Team Size</label><input id="teamBattle.size" type="number" min="2" max="10" value="3" /></div>
+                <div><label>Teams</label><input id="teamBattle.count" type="number" min="2" max="8" value="2" /></div>
+              </div>
+              <div><label>Team Names</label><input id="teamBattle.names" placeholder="Team Alpha, Team Beta, Team Gamma" /></div>
+              <div><label>Team Colors</label><input id="teamBattle.colors" placeholder="#ff0000, #00ff00, #0000ff" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="wingman">
+            <label><input type="checkbox" id="features.wingman" /> 🤝 Wingman System <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Wingman Bonus (punten)</label><input id="wingman.bonus" type="number" min="0" value="15" /></div>
+                <div><label>Help Cooldown (minuten)</label><input id="wingman.cooldown" type="number" min="0" value="10" /></div>
+              </div>
+              <div><label>Auto-pair Wingmen</label><input type="checkbox" id="wingman.autoPair" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="bachelorRoast">
+            <label><input type="checkbox" id="features.bachelorRoast" /> 🔥 Bachelor Roast <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Roast Categories</label><textarea id="bachelorRoast.categories" placeholder="Embarrassing Stories\nChildhood Memories\nDating Fails\nWork Blunders"></textarea></div>
+              <div class="grid-2">
+                <div><label>Voting Enabled</label><input type="checkbox" id="bachelorRoast.voting" /></div>
+                <div><label>Anonymous Submissions</label><input type="checkbox" id="bachelorRoast.anonymous" checked /></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="memoryLane">
+            <label><input type="checkbox" id="features.memoryLane" /> 📸 Memory Lane <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Max Photos per Person</label><input id="memoryLane.maxPhotos" type="number" min="1" value="5" /></div>
+                <div><label>Time Periods</label><input id="memoryLane.periods" placeholder="Childhood, High School, College, Work" /></div>
+              </div>
+              <div><label>Photo Verification</label><input type="checkbox" id="memoryLane.verification" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="groupChat">
+            <label><input type="checkbox" id="features.groupChat" /> 💬 Group Chat <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Max Message Length</label><input id="groupChat.maxLength" type="number" min="50" value="200" /></div>
+                <div><label>Emoji Reactions</label><input type="checkbox" id="groupChat.reactions" checked /></div>
+              </div>
+              <div class="grid-2">
+                <div><label>Profanity Filter</label><input type="checkbox" id="groupChat.filter" /></div>
+                <div><label>Image Sharing</label><input type="checkbox" id="groupChat.images" checked /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Competition Tab -->
+        <div class="tab-content" id="tab-competition">
+          <div class="category-header">🏆 Competition & Leaderboards <span class="feature-count">5 Features</span></div>
+          
+          <div class="feature-toggle" data-feature="leaderboard">
+            <label><input type="checkbox" id="features.leaderboard" /> 📊 Real-time Leaderboard <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Update Frequency (sec)</label><input id="leaderboard.frequency" type="number" min="5" value="30" /></div>
+                <div><label>Show Top X</label><input id="leaderboard.topCount" type="number" min="3" value="10" /></div>
+              </div>
+              <div><label>Categories</label><input id="leaderboard.categories" placeholder="Total Points, Photos Taken, Challenges Completed" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="achievements">
+            <label><input type="checkbox" id="features.achievements" /> 🏅 Achievement Badges <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Custom Achievements</label><textarea id="achievements.custom" placeholder="First Shot - Take the first shot of the night\nPhoto King - Take 50 photos\nSocial Butterfly - Complete 10 social challenges"></textarea></div>
+              <div class="grid-2">
+                <div><label>Badge Points</label><input id="achievements.points" type="number" min="0" value="25" /></div>
+                <div><label>Badge Notifications</label><input type="checkbox" id="achievements.notifications" checked /></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="mvpVoting">
+            <label><input type="checkbox" id="features.mvpVoting" /> 👑 MVP Voting <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Voting Rounds</label><input id="mvpVoting.rounds" type="number" min="1" value="3" /></div>
+                <div><label>MVP Reward (punten)</label><input id="mvpVoting.reward" type="number" min="0" value="100" /></div>
+              </div>
+              <div><label>Categories</label><input id="mvpVoting.categories" placeholder="Funniest, Most Daring, Best Team Player" /></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle premium" data-feature="hallOfFame">
+            <label><input type="checkbox" id="features.hallOfFame" /> 🌟 Hall of Fame <span class="premium-badge">PREMIUM</span></label>
+            <div class="feature-config">
+              <div class="grid-2">
+                <div><label>Auto-capture Moments</label><input type="checkbox" id="hallOfFame.autoCapture" checked /></div>
+                <div><label>Voting Threshold</label><input id="hallOfFame.threshold" type="number" min="1" value="5" /></div>
+              </div>
+              <div><label>Export Options</label><select id="hallOfFame.export"><option>PDF</option><option>Video</option><option>Social Media</option></select></div>
+            </div>
+          </div>
+          
+          <div class="feature-toggle" data-feature="challengeDuels">
+            <label><input type="checkbox" id="features.challengeDuels" /> ⚡ Challenge Duels <span class="feature-count">Basic</span></label>
+            <div class="feature-config">
+              <div><label>Duel Types</label><textarea id="challengeDuels.types" placeholder="Photo Contest - Best selfie wins\nSpeed Challenge - First to complete wins\nCreativity - Most creative approach wins"></textarea></div>
+              <div class="grid-2">
+                <div><label>Winner Bonus</label><input id="challengeDuels.bonus" type="number" min="0" value="30" /></div>
+                <div><label>Duel Duration (min)</label><input id="challengeDuels.duration" type="number" min="1" value="10" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Meer tabs volgen... -->
+        
+        <!-- Settings Tab -->
+        <div class="tab-content" id="tab-settings">
+          <div class="category-header">⚙️ Event Settings & Configuration</div>
+          
+          <div class="section">
+            <h3>📅 Basic Event Info</h3>
+            <div class="grid-2">
+              <div><label>Event Name</label><input id="event.name" placeholder="Bachelor Party Quest" /></div>
+              <div><label>Event Date</label><input id="event.date" type="date" /></div>
+            </div>
+            <div class="grid-2">
+              <div><label>Max Players</label><input id="settings.maxPlayers" type="number" min="1" max="100" value="20" /></div>
+              <div><label>Time Limit (hours)</label><input id="settings.timeLimit" type="number" min="0" value="0" placeholder="0 = geen limiet" /></div>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h3>💰 Pricing Tier</h3>
+            <div class="grid-3">
+              <label><input type="radio" name="tier" value="basic" checked /> Basic (€39)</label>
+              <label><input type="radio" name="tier" value="plus" /> Plus (€99)</label>
+              <label><input type="radio" name="tier" value="pro" /> Pro (€199)</label>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h3>🎨 Branding</h3>
+            <div class="grid-2">
+              <div><label>Primary Color</label><input id="branding.primary" type="color" value="#0b5bd3" /></div>
+              <div><label>Secondary Color</label><input id="branding.secondary" type="color" value="#111111" /></div>
+            </div>
+            <div><label>Logo URL</label><input id="branding.logoUrl" placeholder="https://example.com/logo.png" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      let model = { features: {}, content: {}, settings: {}, branding: {} };
+      
+      // Feature toggling
+      document.querySelectorAll('.feature-toggle input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+          const toggle = e.target.closest('.feature-toggle');
+          const config = toggle.querySelector('.feature-config');
+          
+          if (e.target.checked) {
+            toggle.classList.add('enabled');
+            if (config) config.classList.add('active');
+          } else {
+            toggle.classList.remove('enabled');
+            if (config) config.classList.remove('active');
+          }
+          
+          updateFeatureStats();
+        });
+      });
+      
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+          
+          tab.classList.add('active');
+          document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+      });
+      
+      // Update feature statistics
+      function updateFeatureStats() {
+        const total = document.querySelectorAll('.feature-toggle').length;
+        const enabled = document.querySelectorAll('.feature-toggle.enabled').length;
+        const premium = document.querySelectorAll('.feature-toggle.premium').length;
+        const basic = total - premium;
+        
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('enabledCount').textContent = enabled;
+        document.getElementById('premiumCount').textContent = premium;
+        document.getElementById('basicCount').textContent = basic;
+      }
+      
+      // Save template
+      document.getElementById('saveTemplate').addEventListener('click', () => {
+        // Collect all form data
+        const formData = new FormData();
+        document.querySelectorAll('input, textarea, select').forEach(input => {
+          if (input.type === 'checkbox') {
+            formData.append(input.id, input.checked);
+          } else {
+            formData.append(input.id, input.value);
+          }
+        });
+        
+        showStatus('Template saved successfully!', 'success');
+      });
+      
+      // Show status messages
+      function showStatus(message, type = 'info') {
+        const statusDiv = document.getElementById('statusDisplay');
+        statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        setTimeout(() => statusDiv.innerHTML = '', 3000);
+      }
+      
+      // Initialize
+      updateFeatureStats();
+      showStatus('Advanced Event Builder loaded!', 'success');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+{
+  "event": {
+    "id": "",
+    "name": "Bachelor Party Quest",
+    "date": "",
+    "status": "draft",
+    "description": "Een epische bachelor party quest met bingo, treasure hunt en meer!"
+  },
+  "branding": {
+    "name": "Bachelor Party Quest",
+    "primary": "#0b5bd3",
+    "secondary": "#111111",
+    "logoUrl": "",
+    "backgroundImage": ""
+  },
+  "texts": {
+    "hero.title": "Vrijgezellenfeest? Regel een interactieve game-night in 10 minuten.",
+    "hero.subtitle": "Bingo 5×5, zoektochten, live challenges en foto-feed. Werkt direct op elke smartphone, met spectator view.",
+    "cta.demo": "🎮 Start Quest",
+    "cta.buy": "🎰 Simply Wild",
+    "footer.copyright": "© Bachelor Party Quest"
+  },
+  "pages": {
+    "home": {
+      "welcomeTitle": "Welkom & Intro",
+      "introText": "De timer hieronder telt af tot het moment dat jij geen vrij man meer bent. Dit is dus de laatste keer dat je nog even van je vrijheid kan genieten, en wij gaan je daarmee helpen vandaag! Eerst iedereen maar eens vinden. We hebben dit keer geen cheque verstopt, maar wel de rest van de aanwezigen."
+    },
+    "bingo": {
+      "title": "Bingo 5×5", 
+      "intro": "Maak 25 uitdagingen en scoor punten met je team!",
+      "pointsPerTask": 20,
+      "totalTasks": 25
+    },
+    "treasure": {
+      "title": "Zoek de Rest", 
+      "intro": "Vind je vrienden op geheime locaties in de stad!"
+    },
+    "challenges": {
+      "title": "Live Challenges", 
+      "intro": "Realtime opdrachten van de admin tijdens het spel!"
+    },
+    "hub": {
+      "mainCta": "Start!",
+      "simplyCta": "🎰 Speel Nu!",
+      "shopCta": "De beste deals",
+      "photoWallHandle": "📸 @jellekrmht"
+    },
+    "shop": {
+      "title": "Deal Maker's Shop",
+      "subtitle": "Koop strategische voordelen met je punten!"
+    },
+    "simply": {
+      "title": "Simply Wild",
+      "subtitle": "Gebruik je punten in de gokkast!"
+    },
+    "spectator": {
+      "title": "Kijk live mee!", 
+      "intro": "Publieke feed van alle actie tijdens het event!"
+    }
+  },
+  "content": {
+    "bingo": [],
+    "bingoColors": {
+      "0": "#ec4899",
+      "1": "#60a5fa", 
+      "2": "#facc15",
+      "3": "#f97316",
+      "4": "#34d399"
+    },
+    "treasure": [
+      {
+        "name": "Café de Kroeg",
+        "hint": "Waar de locals hun favoriete biertje drinken...",
+        "gps": "",
+        "found": false
+      },
+      {
+        "name": "Stadspark", 
+        "hint": "Groen hart van de stad, perfect voor een selfie!",
+        "gps": "",
+        "found": false
+      },
+      {
+        "name": "Marktplein",
+        "hint": "Hier gebeurt alle handel en wandel overdag...",
+        "gps": "",
+        "found": false
+      }
+    ],
+    "shopItems": [
+      {
+        "id": "skip-opdracht-straf",
+        "name": "Skip Opdracht",
+        "description": "Sla 1 opdracht over zonder straf",
+        "price": 50,
+        "category": "gameplay"
+      },
+      {
+        "id": "extra-punten-bonus",
+        "name": "Punten Booster",
+        "description": "Dubbele punten voor de volgende opdracht",
+        "price": 30,
+        "category": "points"
+      },
+      {
+        "id": "hint-helper",
+        "name": "Hint Helper", 
+        "description": "Krijg een hint voor een willekeurige opdracht",
+        "price": 25,
+        "category": "help"
+      }
+    ]
+  },
+  "settings": {
+    "maxPlayers": 20,
+    "timeLimit": 0,
+    "language": "nl",
+    "countdownDate": "",
+    "countdownText": "Tot het moment dat je geen vrij man meer bent"
+  },
+  "features": {
+    "spectator": true,
+    "dealShop": true,
+    "simplyWild": true,
+    "photoWall": true,
+    "liveChat": false,
+    "treasureHunt": true,
+    "countdownTimer": true,
+    "liveMessages": true,
+    "liveChallenges": true,
+    "photoBackup": true,
+    "offlineMode": true
+  },
+  "notifications": {
+    "email": true,
+    "push": false,
+    "vibration": true
+  },
+  "billing": {
+    "tier": "basic",
+    "status": "unpaid",
+    "amount": 39
+  },
+  "gameRules": {
+    "bingoRules": {
+      "pointsPerTask": 20,
+      "bonuses": {
+        "fourSameColor": 30,
+        "fiveSameColor": 25,
+        "fiveStars": 50,
+        "firstRow": 35,
+        "firstColumn": 35
+      },
+      "starPenalty": {
+        "enabled": true,
+        "penaltyPerStar": "1 cocktail betalen"
+      }
+    },
+    "colorPattern": [
+      0, 1, 2, 3, 4,
+      1, 4, 0, 2, 3,
+      2, 0, 3, 1, 4,
+      3, 2, 4, 0, 1,
+      4, 3, 1, 2, 0
+    ],
+    "starPositions": [2, 6, 12, 19, 24]
+  }
+}

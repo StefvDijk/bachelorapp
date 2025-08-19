@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bachelor Party Features — SaaS Builder</title>
+  <style>
+    :root { --primary: #0b5bd3; --success: #10b981; --warning: #f59e0b; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin:0; background:#f9fafb; color:#111; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    h1 { color: var(--primary); text-align: center; margin-bottom: 40px; }
+    .category { margin-bottom: 40px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .category-title { 
+      background: linear-gradient(135deg, var(--primary), #1e40af); 
+      color: white; padding: 16px; margin: -24px -24px 24px; border-radius: 12px 12px 0 0;
+      font-size: 18px; font-weight: 600;
+    }
+    
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    .feature { 
+      border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; 
+      transition: all 0.2s; cursor: pointer;
+    }
+    .feature:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .feature.enabled { border-color: var(--success); background: #f0fdf4; }
+    .feature.premium { border-color: var(--warning); background: #fefbf0; }
+    
+    .feature-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .feature-title { font-weight: 600; font-size: 16px; }
+    .premium-badge { 
+      background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; 
+      padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold;
+    }
+    .basic-badge { background: #e5e7eb; color: #6b7280; padding: 4px 8px; border-radius: 12px; font-size: 10px; }
+    
+    .feature-description { color: #6b7280; font-size: 14px; line-height: 1.4; }
+    
+    .stats { 
+      position: fixed; top: 20px; right: 20px; background: white; padding: 16px; 
+      border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 200px;
+    }
+    .stats h3 { margin: 0 0 12px; color: var(--primary); }
+    .stat { display: flex; justify-content: space-between; margin: 8px 0; }
+    
+    .actions { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 12px; }
+    .btn { 
+      padding: 12px 20px; border: none; border-radius: 8px; font-weight: 600; 
+      cursor: pointer; transition: all 0.2s; color: white;
+    }
+    .btn.primary { background: var(--primary); }
+    .btn.success { background: var(--success); }
+    .btn:hover { transform: translateY(-2px); }
+    
+    .toggle { width: 20px; height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Bachelor Party Features Builder</h1>
+    <p style="text-align:center; color:#6b7280; margin-bottom:40px;">
+      Kies uit <strong>50+ features</strong> om de ultieme bachelor party experience te creëren!
+    </p>
+    
+    <!-- Core Features -->
+    <div class="category">
+      <div class="category-title">🎯 Core Features (Altijd Inbegrepen)</div>
+      <div class="features">
+        <div class="feature enabled" data-feature="bingo">
+          <div class="feature-header">
+            <div class="feature-title">🎯 Bingo 5×5 Grid</div>
+            <input type="checkbox" class="toggle" checked disabled />
+          </div>
+          <div class="feature-description">25 opdrachten in een kleurrijk grid met bonuspunten en sterren</div>
+        </div>
+        
+        <div class="feature enabled" data-feature="treasureHunt">
+          <div class="feature-header">
+            <div class="feature-title">🗺️ Treasure Hunt</div>
+            <input type="checkbox" class="toggle" checked disabled />
+          </div>
+          <div class="feature-description">Zoektocht door de stad met GPS verificatie en hints</div>
+        </div>
+        
+        <div class="feature enabled" data-feature="photoWall">
+          <div class="feature-header">
+            <div class="feature-title">📸 Photo Wall</div>
+            <input type="checkbox" class="toggle" checked disabled />
+          </div>
+          <div class="feature-description">Live foto feed met auto-backup en compressie</div>
+        </div>
+        
+        <div class="feature enabled" data-feature="dealShop">
+          <div class="feature-header">
+            <div class="feature-title">🛒 Deal Maker's Shop</div>
+            <input type="checkbox" class="toggle" checked disabled />
+          </div>
+          <div class="feature-description">Koop voordelen met punten: skips, hints, bonussen</div>
+        </div>
+        
+        <div class="feature enabled" data-feature="simplyWild">
+          <div class="feature-header">
+            <div class="feature-title">🎰 Simply Wild Game</div>
+            <input type="checkbox" class="toggle" checked disabled />
+          </div>
+          <div class="feature-description">Gokspel met jackpots en risico/beloning mechanisme</div>
+        </div>
+        
+        <div class="feature" data-feature="spectatorView">
+          <div class="feature-header">
+            <div class="feature-title">👁️ Spectator View</div>
+            <input type="checkbox" class="toggle" />
+          </div>
+          <div class="feature-description">Publieke feed voor vrienden die thuis kijken</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Drinking Games -->
+    <div class="category">
+      <div class="category-title">🍻 Drinking Games & Challenges</div>
+      <div class="features">
+        <div class="feature" data-feature="beerPong">
+          <div class="feature-header">
+            <div class="feature-title">🏓 Beer Pong Tournament</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Volledige tournament brackets met teams en prijzen</div>
+        </div>
+        
+        <div class="feature" data-feature="shotRoulette">
+          <div class="feature-header">
+            <div class="feature-title">🎰 Shot Roulette</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Draai het wiel en drink wat eruit komt</div>
+        </div>
+        
+        <div class="feature" data-feature="neverHaveIEver">
+          <div class="feature-header">
+            <div class="feature-title">🙈 Never Have I Ever</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Digitale versie met custom vragen en scoring</div>
+        </div>
+        
+        <div class="feature" data-feature="truthOrDare">
+          <div class="feature-header">
+            <div class="feature-title">😈 Truth or Dare</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Willekeurige waarheid/durf opdrachten met moeilijkheidsgraden</div>
+        </div>
+        
+        <div class="feature premium" data-feature="drinkingPenalty">
+          <div class="feature-header">
+            <div class="feature-title">🚨 Drinking Penalty System</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Automatische drankstraffen bij punten verlies</div>
+        </div>
+        
+        <div class="feature premium" data-feature="customDrinkingGame">
+          <div class="feature-header">
+            <div class="feature-title">🍺 Custom Drinking Game</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Maak je eigen drinking game met custom regels</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Social Features -->
+    <div class="category">
+      <div class="category-title">👥 Social & Team Features</div>
+      <div class="features">
+        <div class="feature" data-feature="teamBattle">
+          <div class="feature-header">
+            <div class="feature-title">⚔️ Team Battle Mode</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Verdeel in teams en compete tegen elkaar</div>
+        </div>
+        
+        <div class="feature" data-feature="wingmanSystem">
+          <div class="feature-header">
+            <div class="feature-title">🤝 Wingman System</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Koppel spelers om elkaar te helpen met opdrachten</div>
+        </div>
+        
+        <div class="feature" data-feature="bachelorRoast">
+          <div class="feature-header">
+            <div class="feature-title">🔥 Bachelor Roast</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Upload grappige verhalen en foto's over de bachelor</div>
+        </div>
+        
+        <div class="feature" data-feature="memoryLane">
+          <div class="feature-header">
+            <div class="feature-title">📸 Memory Lane</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Deel oude foto's en herinneringen uit het verleden</div>
+        </div>
+        
+        <div class="feature" data-feature="groupChat">
+          <div class="feature-header">
+            <div class="feature-title">💬 Group Chat</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Live chat met emoji reactions en foto delen</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Competition -->
+    <div class="category">
+      <div class="category-title">🏆 Competition & Leaderboards</div>
+      <div class="features">
+        <div class="feature" data-feature="leaderboard">
+          <div class="feature-header">
+            <div class="feature-title">📊 Real-time Leaderboard</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Live rankings met verschillende categorieën</div>
+        </div>
+        
+        <div class="feature" data-feature="achievements">
+          <div class="feature-header">
+            <div class="feature-title">🏅 Achievement Badges</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Unlock badges voor speciale prestaties</div>
+        </div>
+        
+        <div class="feature" data-feature="mvpVoting">
+          <div class="feature-header">
+            <div class="feature-title">👑 MVP Voting</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Stem op de beste speler in verschillende categorieën</div>
+        </div>
+        
+        <div class="feature premium" data-feature="hallOfFame">
+          <div class="feature-header">
+            <div class="feature-title">🌟 Hall of Fame</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Automatisch vastleggen van de beste momenten</div>
+        </div>
+        
+        <div class="feature" data-feature="challengeDuels">
+          <div class="feature-header">
+            <div class="feature-title">⚡ Challenge Duels</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">1-op-1 uitdagingen tussen spelers</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Media Features -->
+    <div class="category">
+      <div class="category-title">📱 Interactive Media</div>
+      <div class="features">
+        <div class="feature premium" data-feature="liveStreaming">
+          <div class="feature-header">
+            <div class="feature-title">📺 Live Streaming</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Stream live naar vrienden thuis met chat functie</div>
+        </div>
+        
+        <div class="feature" data-feature="storyMode">
+          <div class="feature-header">
+            <div class="feature-title">📖 Story Mode</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Instagram-style verhalen die na 24u verdwijnen</div>
+        </div>
+        
+        <div class="feature" data-feature="memeGenerator">
+          <div class="feature-header">
+            <div class="feature-title">😂 Meme Generator</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Maak memes van foto's met populaire templates</div>
+        </div>
+        
+        <div class="feature" data-feature="videoChallenges">
+          <div class="feature-header">
+            <div class="feature-title">🎥 Video Challenges</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Record jezelf tijdens opdrachten voor bewijs</div>
+        </div>
+        
+        <div class="feature" data-feature="playlistControl">
+          <div class="feature-header">
+            <div class="feature-title">🎵 Playlist Control</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Collaborative Spotify/Apple Music playlist</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Location Features -->
+    <div class="category">
+      <div class="category-title">📍 Location-Based Features</div>
+      <div class="features">
+        <div class="feature" data-feature="barCrawl">
+          <div class="feature-header">
+            <div class="feature-title">🍺 Bar Crawl Route</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Optimale route langs kroegen met timing</div>
+        </div>
+        
+        <div class="feature" data-feature="checkinSystem">
+          <div class="feature-header">
+            <div class="feature-title">✅ Check-in System</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">QR codes en GPS verificatie bij locaties</div>
+        </div>
+        
+        <div class="feature premium" data-feature="localDeals">
+          <div class="feature-header">
+            <div class="feature-title">💸 Local Deals</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Kortingen bij partner locaties unlock via check-ins</div>
+        </div>
+        
+        <div class="feature" data-feature="rideSharing">
+          <div class="feature-header">
+            <div class="feature-title">🚗 Ride Integration</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Uber/Lyft integratie voor groepsritten</div>
+        </div>
+        
+        <div class="feature" data-feature="emergencyContact">
+          <div class="feature-header">
+            <div class="feature-title">🚨 Emergency Contact</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Snelle hulp met locatie delen als iemand verdwaalt</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Party Atmosphere -->
+    <div class="category">
+      <div class="category-title">🎊 Party Atmosphere</div>
+      <div class="features">
+        <div class="feature" data-feature="weddingCountdown">
+          <div class="feature-header">
+            <div class="feature-title">💒 Wedding Countdown</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Aftellen naar de trouwdag met custom bericht</div>
+        </div>
+        
+        <div class="feature" data-feature="bachelorTrivia">
+          <div class="feature-header">
+            <div class="feature-title">🧠 Bachelor Trivia</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Vragen over de bachelor met tijdslimiet en punten</div>
+        </div>
+        
+        <div class="feature" data-feature="embarrassingStories">
+          <div class="feature-header">
+            <div class="feature-title">😅 Embarrassing Stories</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Anoniem verhalen delen met voting systeem</div>
+        </div>
+        
+        <div class="feature premium" data-feature="aiDareGenerator">
+          <div class="feature-header">
+            <div class="feature-title">🎲 AI Dare Generator</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">AI gegenereerde opdrachten op basis van context</div>
+        </div>
+        
+        <div class="feature" data-feature="partyPlaylist">
+          <div class="feature-header">
+            <div class="feature-title">🎶 Party Playlist</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Collaborative playlist met auto-DJ mode</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Advanced Economics -->
+    <div class="category">
+      <div class="category-title">💰 Advanced Economics</div>
+      <div class="features">
+        <div class="feature premium" data-feature="bettingSystem">
+          <div class="feature-header">
+            <div class="feature-title">🎰 Betting System</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Wed punten op uitkomsten met house edge</div>
+        </div>
+        
+        <div class="feature premium" data-feature="auctionHouse">
+          <div class="feature-header">
+            <div class="feature-title">🔨 Auction House</div>
+            <div class="premium-badge">PREMIUM</div>
+          </div>
+          <div class="feature-description">Bied op speciale privileges en voordelen</div>
+        </div>
+        
+        <div class="feature" data-feature="pointLoans">
+          <div class="feature-header">
+            <div class="feature-title">🏦 Point Loans</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Leen punten van vrienden met rente</div>
+        </div>
+        
+        <div class="feature" data-feature="pointInsurance">
+          <div class="feature-header">
+            <div class="feature-title">🛡️ Point Insurance</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Bescherm je punten tegen verlies</div>
+        </div>
+        
+        <div class="feature" data-feature="tipJar">
+          <div class="feature-header">
+            <div class="feature-title">🎩 Tip Jar</div>
+            <div class="basic-badge">Basic</div>
+          </div>
+          <div class="feature-description">Geef punten aan de beste performers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Stats Panel -->
+  <div class="stats">
+    <h3>📊 Feature Stats</h3>
+    <div class="stat"><span>Total Features:</span> <span id="totalCount">50</span></div>
+    <div class="stat"><span>✅ Enabled:</span> <span id="enabledCount">5</span></div>
+    <div class="stat"><span>⭐ Premium:</span> <span id="premiumCount">8</span></div>
+    <div class="stat"><span>📱 Basic:</span> <span id="basicCount">42</span></div>
+    <div class="stat"><span>💰 Cost:</span> <span id="costEstimate">€39</span></div>
+  </div>
+  
+  <!-- Action Buttons -->
+  <div class="actions">
+    <button class="btn primary" id="generateEvent">🚀 Generate Event</button>
+    <button class="btn success" id="previewApp">👁️ Preview App</button>
+  </div>
+  
+  <script>
+    let enabledFeatures = new Set(['bingo', 'treasureHunt', 'photoWall', 'dealShop', 'simplyWild']);
+    
+    // Feature toggling
+    document.querySelectorAll('.feature').forEach(feature => {
+      const checkbox = feature.querySelector('.toggle');
+      const featureId = feature.dataset.feature;
+      
+      if (!checkbox.disabled) {
+        feature.addEventListener('click', (e) => {
+          if (e.target === checkbox) return;
+          checkbox.checked = !checkbox.checked;
+          toggleFeature(featureId, checkbox.checked);
+        });
+        
+        checkbox.addEventListener('change', (e) => {
+          toggleFeature(featureId, e.target.checked);
+        });
+      }
+    });
+    
+    function toggleFeature(featureId, enabled) {
+      const feature = document.querySelector(`[data-feature="${featureId}"]`);
+      
+      if (enabled) {
+        enabledFeatures.add(featureId);
+        feature.classList.add('enabled');
+      } else {
+        enabledFeatures.delete(featureId);
+        feature.classList.remove('enabled');
+      }
+      
+      updateStats();
+    }
+    
+    function updateStats() {
+      const total = document.querySelectorAll('.feature').length;
+      const enabled = enabledFeatures.size;
+      const premium = document.querySelectorAll('.feature.premium .toggle:checked').length;
+      const basic = enabled - premium;
+      
+      // Cost calculation
+      let cost = 39; // Base price
+      if (premium > 0) cost = 99; // Plus tier
+      if (premium > 3) cost = 199; // Pro tier
+      
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('enabledCount').textContent = enabled;
+      document.getElementById('premiumCount').textContent = premium;
+      document.getElementById('basicCount').textContent = basic;
+      document.getElementById('costEstimate').textContent = `€${cost}`;
+    }
+    
+    // Action buttons
+    document.getElementById('generateEvent').addEventListener('click', () => {
+      const config = {
+        features: Array.from(enabledFeatures),
+        timestamp: new Date().toISOString(),
+        tier: enabledFeatures.size > 20 ? 'pro' : enabledFeatures.size > 10 ? 'plus' : 'basic'
+      };
+      
+      alert(`Event Generated!\\n\\nFeatures: ${config.features.length}\\nTier: ${config.tier}\\n\\nConfig saved to localStorage.`);
+      localStorage.setItem('bachelorPartyConfig', JSON.stringify(config));
+    });
+    
+    document.getElementById('previewApp').addEventListener('click', () => {
+      window.open('/index.html', '_blank');
+    });
+    
+    // Initialize
+    updateStats();
+  </script>
+</body>
+</html>

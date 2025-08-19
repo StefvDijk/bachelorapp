@@ -1,0 +1,457 @@
+{
+  "event": {
+    "id": "",
+    "name": "Ultimate Bachelor Party Quest",
+    "date": "",
+    "status": "draft",
+    "description": "De meest complete bachelor party experience met alle features die je kunt bedenken!",
+    "tier": "pro"
+  },
+  "branding": {
+    "name": "Bachelor Party Quest Pro",
+    "primary": "#0b5bd3",
+    "secondary": "#111111",
+    "logoUrl": "",
+    "backgroundImage": ""
+  },
+  "features": {
+    "core": {
+      "bingo": { "enabled": true, "pointsPerTask": 20, "totalTasks": 25 },
+      "treasureHunt": { "enabled": true, "locationCount": 3, "pointsPerLocation": 30, "gpsVerification": false },
+      "photoWall": { "enabled": true, "maxPhotos": 50, "autoBackup": true, "compression": "Medium" },
+      "dealShop": { "enabled": true, "dynamicPricing": false },
+      "simplyWild": { "enabled": true, "minBet": 5, "maxBet": 100, "jackpot": true },
+      "spectatorView": { "enabled": true, "publicLink": true, "realtime": true, "photoFeed": true }
+    },
+    "drinking": {
+      "beerPong": { 
+        "enabled": false, 
+        "format": "Single Elimination", 
+        "teams": 8, 
+        "prize": 100,
+        "bracket": true
+      },
+      "shotRoulette": { 
+        "enabled": false, 
+        "types": ["Vodka", "Tequila", "Rum", "Whiskey", "Jager", "Sambuca"],
+        "cost": 10, 
+        "reward": 25,
+        "animation": true
+      },
+      "neverHaveIEver": { 
+        "enabled": false, 
+        "points": 5, 
+        "rounds": 10,
+        "anonymous": false,
+        "questions": [
+          "Never have I ever... been to jail",
+          "Never have I ever... kissed a stranger", 
+          "Never have I ever... lied about my age",
+          "Never have I ever... skinny dipped",
+          "Never have I ever... been in a fight"
+        ]
+      },
+      "truthOrDare": { 
+        "enabled": false,
+        "difficulty": "Medium",
+        "truths": [
+          "What's your biggest fear?",
+          "Who was your first kiss?", 
+          "What's your most embarrassing moment?"
+        ],
+        "dares": [
+          "Do 10 push-ups",
+          "Sing a song in public",
+          "Text your ex"
+        ]
+      },
+      "drinkingPenalty": { 
+        "enabled": false, 
+        "threshold": 20, 
+        "type": "Shot",
+        "gracePeriod": 5,
+        "premium": true
+      },
+      "drinkingGame": { 
+        "enabled": false,
+        "rules": "Custom drinking game rules...",
+        "minPlayers": 3,
+        "maxPlayers": 10,
+        "premium": true
+      }
+    },
+    "social": {
+      "teamBattle": { 
+        "enabled": false, 
+        "size": 3, 
+        "count": 2,
+        "names": ["Team Alpha", "Team Beta", "Team Gamma"],
+        "colors": ["#ff0000", "#00ff00", "#0000ff"],
+        "autoPair": false
+      },
+      "wingman": { 
+        "enabled": false, 
+        "bonus": 15, 
+        "cooldown": 10,
+        "autoPair": false
+      },
+      "bachelorRoast": { 
+        "enabled": false,
+        "voting": false,
+        "anonymous": true,
+        "categories": ["Embarrassing Stories", "Childhood Memories", "Dating Fails", "Work Blunders"]
+      },
+      "memoryLane": { 
+        "enabled": false, 
+        "maxPhotos": 5,
+        "periods": ["Childhood", "High School", "College", "Work"],
+        "verification": false
+      },
+      "groupChat": { 
+        "enabled": false, 
+        "maxLength": 200, 
+        "reactions": true,
+        "filter": false,
+        "images": true
+      }
+    },
+    "competition": {
+      "leaderboard": { 
+        "enabled": false, 
+        "frequency": 30, 
+        "topCount": 10,
+        "categories": ["Total Points", "Photos Taken", "Challenges Completed"]
+      },
+      "achievements": { 
+        "enabled": false, 
+        "points": 25,
+        "notifications": true,
+        "custom": [
+          "First Shot - Take the first shot of the night",
+          "Photo King - Take 50 photos",
+          "Social Butterfly - Complete 10 social challenges",
+          "Night Owl - Last person standing",
+          "Helper - Help 5 other players"
+        ]
+      },
+      "mvpVoting": { 
+        "enabled": false, 
+        "rounds": 3, 
+        "reward": 100,
+        "categories": ["Funniest", "Most Daring", "Best Team Player"]
+      },
+      "hallOfFame": { 
+        "enabled": false,
+        "autoCapture": true,
+        "threshold": 5,
+        "export": "PDF",
+        "premium": true
+      },
+      "challengeDuels": { 
+        "enabled": false, 
+        "bonus": 30,
+        "duration": 10,
+        "types": [
+          "Photo Contest - Best selfie wins",
+          "Speed Challenge - First to complete wins", 
+          "Creativity - Most creative approach wins"
+        ]
+      }
+    },
+    "media": {
+      "liveStreaming": { 
+        "enabled": false,
+        "title": "Bachelor Party Live!",
+        "maxViewers": 100,
+        "chat": true,
+        "premium": true
+      },
+      "storyMode": { 
+        "enabled": false, 
+        "duration": 24, 
+        "maxStories": 10,
+        "autoDelete": true
+      },
+      "memeGenerator": { 
+        "enabled": false,
+        "customText": true,
+        "templates": ["Distracted Boyfriend", "Drake Pointing", "This is Fine", "Woman Yelling at Cat"]
+      },
+      "videoChallenges": { 
+        "enabled": false, 
+        "maxLength": 60, 
+        "quality": "1080p",
+        "autoUpload": false
+      },
+      "playlistControl": { 
+        "enabled": false,
+        "service": "Spotify",
+        "songsPerPerson": 3,
+        "voting": false
+      }
+    },
+    "location": {
+      "barCrawl": { 
+        "enabled": false,
+        "optimize": true,
+        "timePerLocation": 45,
+        "locations": [
+          "The Irish Pub - Main Street 123",
+          "Sports Bar Central - Oak Avenue 456", 
+          "Rooftop Lounge - High Street 789"
+        ]
+      },
+      "checkinSystem": { 
+        "enabled": false, 
+        "method": "QR Code", 
+        "bonus": 10,
+        "required": 3
+      },
+      "localDeals": { 
+        "enabled": false,
+        "unlock": "Check-in",
+        "partners": [
+          "Murphy's Pub - 20% off drinks",
+          "Pizza Palace - Buy 2 get 1 free",
+          "Taxi Service - 15% discount"
+        ],
+        "premium": true
+      },
+      "uberIntegration": { 
+        "enabled": false,
+        "service": "Uber",
+        "groupRides": true,
+        "splitCost": true
+      },
+      "emergencyContact": { 
+        "enabled": false,
+        "locationSharing": false,
+        "numbers": [
+          "Organizer: +31612345678",
+          "Backup: +31687654321", 
+          "Local Emergency: 112"
+        ]
+      }
+    },
+    "party": {
+      "weddingCountdown": { 
+        "enabled": false,
+        "date": "",
+        "style": "Digital",
+        "message": "Days until [Name] is off the market!"
+      },
+      "bachelorTrivia": { 
+        "enabled": false, 
+        "points": 15, 
+        "timeLimit": 30,
+        "questions": [
+          "What's [Name]'s favorite beer?",
+          "Where did [Name] meet their partner?",
+          "What's [Name]'s biggest fear?"
+        ]
+      },
+      "embarrassingStories": { 
+        "enabled": false,
+        "anonymous": true,
+        "voting": false,
+        "maxLength": 500
+      },
+      "dareGenerator": { 
+        "enabled": false,
+        "difficulty": "Medium",
+        "categories": ["Social", "Physical", "Creative", "Silly"],
+        "prompts": [
+          "Make it about the bachelor",
+          "Include the wedding theme",
+          "Use local landmarks"
+        ],
+        "premium": true
+      },
+      "partyPlaylist": { 
+        "enabled": false,
+        "genres": ["Pop", "Rock", "Hip-Hop", "Dance"],
+        "explicit": "Allow",
+        "autoDJ": false
+      }
+    },
+    "economics": {
+      "bettingSystem": { 
+        "enabled": false,
+        "minBet": 5,
+        "maxBet": 100,
+        "houseEdge": 5,
+        "types": [
+          "Who will complete challenge first?",
+          "Who will take the best photo?",
+          "Who will drink the most?",
+          "Who will get the most phone numbers?"
+        ],
+        "premium": true
+      },
+      "auctionHouse": { 
+        "enabled": false,
+        "frequency": 60,
+        "duration": 5,
+        "items": [
+          "Skip next challenge",
+          "Choose someone's dare",
+          "Extra shot immunity", 
+          "VIP seating at dinner"
+        ],
+        "premium": true
+      },
+      "pointLoans": { 
+        "enabled": false, 
+        "maxAmount": 50, 
+        "interestRate": 10,
+        "repaymentPeriod": 3
+      },
+      "pointInsurance": { 
+        "enabled": false, 
+        "cost": 15, 
+        "coverage": 80,
+        "maxClaims": 2
+      },
+      "tipJar": { 
+        "enabled": false, 
+        "minTip": 5, 
+        "maxTip": 25,
+        "reasons": [
+          "Great performance",
+          "Helpful teammate", 
+          "Funniest moment",
+          "Best sport",
+          "Most creative"
+        ]
+      }
+    }
+  },
+  "content": {
+    "bingo": [],
+    "bingoColors": {
+      "0": "#ec4899",
+      "1": "#60a5fa", 
+      "2": "#facc15",
+      "3": "#f97316",
+      "4": "#34d399"
+    },
+    "treasure": [
+      {
+        "name": "Café de Kroeg",
+        "hint": "Waar de locals hun favoriete biertje drinken...",
+        "gps": "",
+        "found": false
+      },
+      {
+        "name": "Stadspark", 
+        "hint": "Groen hart van de stad, perfect voor een selfie!",
+        "gps": "",
+        "found": false
+      },
+      {
+        "name": "Marktplein",
+        "hint": "Hier gebeurt alle handel en wandel overdag...",
+        "gps": "",
+        "found": false
+      }
+    ],
+    "shopItems": [
+      {
+        "id": "skip-opdracht-straf",
+        "name": "Skip Opdracht",
+        "description": "Sla 1 opdracht over zonder straf",
+        "price": 50,
+        "category": "gameplay"
+      },
+      {
+        "id": "extra-punten-bonus",
+        "name": "Punten Booster",
+        "description": "Dubbele punten voor de volgende opdracht",
+        "price": 30,
+        "category": "points"
+      },
+      {
+        "id": "hint-helper",
+        "name": "Hint Helper", 
+        "description": "Krijg een hint voor een willekeurige opdracht",
+        "price": 25,
+        "category": "help"
+      },
+      {
+        "id": "team-swap",
+        "name": "Team Swap",
+        "description": "Wissel van team (alleen in team mode)",
+        "price": 75,
+        "category": "social"
+      },
+      {
+        "id": "double-or-nothing",
+        "name": "Double or Nothing",
+        "description": "Volgende opdracht: dubbele punten of alles kwijt",
+        "price": 40,
+        "category": "risk"
+      }
+    ]
+  },
+  "settings": {
+    "maxPlayers": 20,
+    "timeLimit": 0,
+    "language": "nl",
+    "countdownDate": "",
+    "countdownText": "Tot het moment dat je geen vrij man meer bent",
+    "difficulty": "medium",
+    "ageRating": "18+"
+  },
+  "notifications": {
+    "email": true,
+    "push": true,
+    "vibration": true,
+    "sound": true
+  },
+  "billing": {
+    "tier": "pro",
+    "status": "unpaid",
+    "amount": 199,
+    "currency": "EUR"
+  },
+  "gameRules": {
+    "bingoRules": {
+      "pointsPerTask": 20,
+      "bonuses": {
+        "fourSameColor": 30,
+        "fiveSameColor": 25,
+        "fiveStars": 50,
+        "firstRow": 35,
+        "firstColumn": 35
+      },
+      "starPenalty": {
+        "enabled": true,
+        "penaltyPerStar": "1 cocktail betalen"
+      }
+    },
+    "colorPattern": [
+      0, 1, 2, 3, 4,
+      1, 4, 0, 2, 3,
+      2, 0, 3, 1, 4,
+      3, 2, 4, 0, 1,
+      4, 3, 1, 2, 0
+    ],
+    "starPositions": [2, 6, 12, 19, 24],
+    "premiumFeatures": [
+      "drinkingPenalty",
+      "drinkingGame", 
+      "hallOfFame",
+      "liveStreaming",
+      "localDeals",
+      "dareGenerator",
+      "bettingSystem",
+      "auctionHouse"
+    ]
+  },
+  "analytics": {
+    "trackUserBehavior": true,
+    "heatmaps": true,
+    "conversionTracking": true,
+    "customEvents": true
+  }
+}

@@ -1,0 +1,3 @@
+[submodule "external/bachelor-party-quest-pwa"]
+	path = external/bachelor-party-quest-pwa
+	url = https://github.com/StefvDijk/bachelor-party-quest-pwa

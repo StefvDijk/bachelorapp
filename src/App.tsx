@@ -15,6 +15,8 @@ import PhotoWall from "./pages/PhotoWall";
 import SimplyWild from "./pages/SimplyWild";
 import DealMakersShop from "./pages/DealMakersShop";
 import NotFound from "./pages/NotFound";
+import EventWizard from "./pages/EventWizard";
+import EventPreview from "./pages/EventPreview";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import React, { useEffect } from "react";
 import { supabase } from '@/integrations/supabase/client';
@@ -67,6 +69,10 @@ const App = () => {
             <Route path="/photo-wall" element={<PhotoWall />} />
             <Route path="/simply-wild" element={<SimplyWild />} />
             <Route path="/deal-makers-shop" element={<DealMakersShop />} />
+            
+            {/* Event Management */}
+            <Route path="/create-event" element={<EventWizard />} />
+            <Route path="/event-preview/:slug" element={<EventPreview />} />
             
             {/* Admin Interface */}
             <Route path="/admin-dashboard-secret-2025" element={<AdminDashboard />} />

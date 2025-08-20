@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { PartyPopper, User, Info, ArrowRight, AlertTriangle } from 'lucide-react';
+import { PartyPopper, User, Info, ArrowRight, AlertTriangle, Sparkles } from 'lucide-react';
 import NavigationBar from '@/components/NavigationBar';
 import CountdownTimer from '@/components/CountdownTimer';
 import { SessionManager } from '@/utils/sessionManager';
@@ -83,6 +83,11 @@ const Home = () => {
                   <User className="w-5 h-5 mr-2" />
                   {hasStartedApp ? 'TERUG NAAR SPEL' : 'HIDDEN FRIENDS!'}
                   <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                
+                <Button onClick={() => navigate('/create-event')} variant="outline" size="lg" className="w-full mt-3">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  NIEUW EVENT AANMAKEN
                 </Button>
               </CardContent>
             </Card>
